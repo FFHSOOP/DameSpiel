@@ -2,15 +2,11 @@
 
 ### To-Do's
 
-- [ ] Menü
-- [ ] 2 Player Mode hervorheben/anzeige des aktuellen Spielerzugs etc.
-- [ ] Design changes
-- [ ] Tests
-- [ ] Logik
-- [ ] Status
-- [ ] End game Screen
-
-### Goodies
-
-- [ ] \(Optional) KI für Single Player
-- [ ] \(Optional) Netzwerkfähig
+- [ ] Menü @stefannyffenegger
+- [ ] 2 Player Mode hervorheben/anzeige des aktuellen Spielerzugs etc. @stefannyffenegger
+- [ ] Status @stefannyffenegger
+- [ ] Design changes @wym83
+- [ ] Tests @wym83
+- [ ] Logik @benschme
+- [ ] End game Screen @benschme
+- [ ] KI für Single Player @benschme
