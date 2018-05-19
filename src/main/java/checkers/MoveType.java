@@ -1,7 +1,7 @@
 package checkers;
 
 /**
- * 
+ * Bewegungstypen
  *
  * @author Marco Wyssmann
  * @author Benjamin Steffen

@@ -1,5 +1,6 @@
 package checkers;
 
+import java.io.InputStream;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Parent;
@@ -8,9 +9,16 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.FlowPane;
 
 /**
- * 
+ * Mainklasse
  *
  * @author Marco Wyssmann
  * @author Benjamin Steffen
@@ -25,14 +33,15 @@ public class Main extends Application {
 
     private Tile[][] board = new Tile[WIDTH][HEIGHT]; //Feldarray
 
-    private Group tileGroup = new Group();
-    private Group pieceGroup = new Group();
+    private Group tileGroup = new Group(); //Felder
+    private Group pieceGroup = new Group(); //Spielsteine
 
     private boolean hasToKill;
-    
+
     /**
      * Main
-     * @param args 
+     *
+     * @param args
      */
     public static void main(String[] args) {
         launch(args);
@@ -40,22 +49,56 @@ public class Main extends Application {
 
     /**
      * Start Methode von JavaFX, wird durch launch() aufgerufen
+     *
      * @param primaryStage
-     * @throws Exception 
+     * @throws Exception
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Scene scene = new Scene(createContent());
-        primaryStage.setTitle("Checkers Draughts");
+        Pane menu = new FlowPane();
+        menu.setPadding(new Insets(10));
+        
+        Button single = new Button("Singleplayer");
+        Button multi = new Button("Multiplayer");
+        //single.setOnAction(singleplayer());
+        multi.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                multiplayer(primaryStage);
+            }
+        });
+
+        menu.getChildren().addAll(single, multi);
+
+        Scene scene = new Scene(menu);
+        primaryStage.setTitle("Checkers Draughts - Menu");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
 
+    /**
+     * Multiplayer Modus
+     *
+     * @param stage
+     */
+    public void multiplayer(Stage stage) {
+        Scene scene = new Scene(createContent());
+        stage.setTitle("Checkers Draughts - Multiplayer");
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    /**
+     * Initialer Aufbau des Spielfeldes
+     *
+     * @return
+     */
     private Parent createContent() {
         Pane root = new Pane();
         root.setPrefSize(WIDTH * TILE_SIZE, HEIGHT * TILE_SIZE); //Groesse des Spielfeldes
         root.getChildren().addAll(tileGroup, pieceGroup);
 
+        //Initialer Aufbau der Spielsteine
         for (int y = 0; y < HEIGHT; y++) {
             for (int x = 0; x < WIDTH; x++) {
                 Tile tile = new Tile((x + y) % 2 == 0, x, y);
@@ -79,10 +122,16 @@ public class Main extends Application {
                 }
             }
         }
-
         return root;
     }
 
+    /**
+     *
+     * @param piece
+     * @param newX
+     * @param newY
+     * @return
+     */
     private MoveResult tryMove(Piece piece, int newX, int newY) {
 
         int x0 = toBoard(piece.getOldX());
@@ -142,10 +191,24 @@ public class Main extends Application {
         return new MoveResult(MoveType.NONE);
     }
 
+    /**
+     *
+     * @param pixel
+     * @return
+     */
     private int toBoard(double pixel) {
         return (int) (pixel + TILE_SIZE / 2) / TILE_SIZE;
     }
 
+    /**
+     *
+     * @param piece
+     * @param newX
+     * @param newY
+     * @param direction
+     * @param hasKill
+     * @param enemy
+     */
     public void canKill(Piece piece, int newX, int newY, int direction, boolean hasKill, boolean enemy) {
 
         if (hasToKill) {
@@ -214,6 +277,13 @@ public class Main extends Application {
         }
     }
 
+    /**
+     *
+     * @param type
+     * @param x
+     * @param y
+     * @return
+     */
     private Piece makePiece(PieceType type, int x, int y) {
         Piece piece = new Piece(type, x, y);
 

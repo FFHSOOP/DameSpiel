@@ -1,7 +1,7 @@
 package checkers;
 
 /**
- * 
+ * Spielstein Typen
  *
  * @author Marco Wyssmann
  * @author Benjamin Steffen

@@ -3,7 +3,7 @@ package checkers;
 import java.util.ArrayList;
 
 /**
- *
+ * 
  *
  * @author Marco Wyssmann
  * @author Benjamin Steffen
