@@ -19,20 +19,41 @@ import java.util.ArrayList;
  */
 public class Main extends Application {
 
-    public static final int TILE_SIZE = 100;
-    public static final int WIDTH = 8;
-    public static final int HEIGHT = 8;
+    public static final int TILE_SIZE = 100; //Groesse eines einzelnen Feldes
+    public static final int WIDTH = 8; //Anzahl Felder Breite
+    public static final int HEIGHT = 8; //Anzahl Felder Hoehe
 
-    private Tile[][] board = new Tile[WIDTH][HEIGHT];
+    private Tile[][] board = new Tile[WIDTH][HEIGHT]; //Feldarray
 
     private Group tileGroup = new Group();
     private Group pieceGroup = new Group();
 
     private boolean hasToKill;
+    
+    /**
+     * Main
+     * @param args 
+     */
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+    /**
+     * Start Methode von JavaFX, wird durch launch() aufgerufen
+     * @param primaryStage
+     * @throws Exception 
+     */
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        Scene scene = new Scene(createContent());
+        primaryStage.setTitle("Checkers Draughts");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
 
     private Parent createContent() {
         Pane root = new Pane();
-        root.setPrefSize(WIDTH * TILE_SIZE, HEIGHT * TILE_SIZE);
+        root.setPrefSize(WIDTH * TILE_SIZE, HEIGHT * TILE_SIZE); //Groesse des Spielfeldes
         root.getChildren().addAll(tileGroup, pieceGroup);
 
         for (int y = 0; y < HEIGHT; y++) {
@@ -123,14 +144,6 @@ public class Main extends Application {
 
     private int toBoard(double pixel) {
         return (int) (pixel + TILE_SIZE / 2) / TILE_SIZE;
-    }
-
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-        Scene scene = new Scene(createContent());
-        primaryStage.setTitle("CheckersApp");
-        primaryStage.setScene(scene);
-        primaryStage.show();
     }
 
     public void canKill(Piece piece, int newX, int newY, int direction, boolean hasKill, boolean enemy) {
@@ -284,9 +297,5 @@ public class Main extends Application {
         });
 
         return piece;
-    }
-
-    public static void main(String[] args) {
-        launch(args);
     }
 }
