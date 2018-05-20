@@ -16,9 +16,11 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.text.Font;
 
 /**
  * Mainklasse
@@ -34,10 +36,11 @@ public class Main extends Application {
     public static final int WIDTH = 8; //Anzahl Felder Breite
     public static final int HEIGHT = 8; //Anzahl Felder Hoehe
 
-    private Tile[][] board = new Tile[WIDTH][HEIGHT]; //Feldarray
+    private Tile[][] board = new Tile[WIDTH][HEIGHT]; //Spielbrett mit allen Tiles
 
     private Group tileGroup = new Group(); //Felder
     private Group pieceGroup = new Group(); //Spielsteine
+    private FlowPane gameInfo = new FlowPane(); //Spielinformationen
 
     private boolean hasToKill;
 
@@ -63,53 +66,53 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
     }
-    
+
     /**
      * Erstellt ein Auswahlmenu
-     * 
-     * @return 
+     *
+     * @return
      */
-    private Parent createMenu(Stage stage){
+    private Parent createMenu(Stage stage) {
         FlowPane menu = new FlowPane();
         menu.setPadding(new Insets(10));
         menu.setHgap(10);
         menu.setVgap(10);
-        
+
         //Button Icons
         try {
             FileInputStream inSingle = new FileInputStream("src/main/java/checkers/icon/single.png");
-        Image imgSingle = new Image(inSingle);
-        ImageView imageViewSingle = new ImageView(imgSingle);
-        FileInputStream inMulti = new FileInputStream("src/main/java/checkers/icon/multi.png");
-        Image imgMulti = new Image(inMulti);
-        ImageView imageViewMulti = new ImageView(imgMulti);
-        
-        Button single = new Button("One Player", imageViewSingle);
-        Button multi = new Button("Two Players", imageViewMulti);
-        single.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                singleplayer(stage);
-            }
-        });
-        multi.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                multiplayer(stage);
-            }
-        });
+            Image imgSingle = new Image(inSingle);
+            ImageView imageViewSingle = new ImageView(imgSingle);
+            FileInputStream inMulti = new FileInputStream("src/main/java/checkers/icon/multi.png");
+            Image imgMulti = new Image(inMulti);
+            ImageView imageViewMulti = new ImageView(imgMulti);
 
-        menu.getChildren().addAll(single, multi);
+            Button single = new Button("One Player", imageViewSingle);
+            Button multi = new Button("Two Players", imageViewMulti);
+            single.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    singleplayer(stage);
+                }
+            });
+            multi.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    multiplayer(stage);
+                }
+            });
+
+            menu.getChildren().addAll(single, multi);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return menu;
     }
-    
+
     /**
      * Multiplayer Modus
-     * 
+     *
      * @param stage
      */
     public void multiplayer(Stage stage) {
@@ -118,13 +121,13 @@ public class Main extends Application {
         stage.setScene(scene);
         stage.show();
     }
-    
+
     /**
      * Singleplayer Modus
-     * 
-     * @param stage 
+     *
+     * @param stage
      */
-    public void singleplayer(Stage stage){
+    public void singleplayer(Stage stage) {
         System.out.println("Not implemented yet");
         //KI stuff
     }
@@ -136,8 +139,8 @@ public class Main extends Application {
      */
     private Parent createContent() {
         Pane root = new Pane();
-        root.setPrefSize(WIDTH * TILE_SIZE, HEIGHT * TILE_SIZE); //Groesse des Spielfeldes
-        root.getChildren().addAll(tileGroup, pieceGroup);
+        root.setPrefSize(WIDTH * TILE_SIZE, HEIGHT * TILE_SIZE + 200); //Groesse des Spielfeldes
+        root.getChildren().addAll(tileGroup, pieceGroup, gameInfo);
 
         //Initialer Aufbau der Spielsteine
         for (int y = 0; y < HEIGHT; y++) {
@@ -163,6 +166,16 @@ public class Main extends Application {
                 }
             }
         }
+        
+        //Spielinformationen
+        gameInfo.relocate(0, 800);
+        gameInfo.setPadding(new Insets(10));
+        gameInfo.setHgap(10);
+        gameInfo.setVgap(10);
+        Label lbZug = new Label("Zug: Der erste Spieler kann beginnen");
+        lbZug.setFont(new Font("Arial", 20));
+        gameInfo.getChildren().addAll(lbZug);
+        
         return root;
     }
 
@@ -214,7 +227,6 @@ public class Main extends Application {
                     if (i + 1 == Math.abs(newX - x0)) {
                         return new MoveResult(MoveType.KILL, piecesList);
                     }
-                    continue;
                 } else {
                     break;
                 }
@@ -275,6 +287,27 @@ public class Main extends Application {
             x = 1;
             y = 1;
         }
+        
+        /*switch (direction) {
+            case 1:
+                x = -1;
+                y = -1;
+                break;
+            case 2:
+                x = 1;
+                y = -1;
+                break;
+            case 3:
+                x = -1;
+                y = 1;
+                break;
+            case 4:
+                x = 1;
+                y = 1;
+                break;
+            default:
+                break;
+        }*/
 
         if (newX + x >= 0 && newX + x <= 7 && newY + y >= 0 && newY + y <= 7) {
             System.out.println("x: " + (newX + x) + " y: " + (newY + y));
