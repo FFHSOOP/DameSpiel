@@ -1,6 +1,7 @@
 package checkers;
 
-import java.io.InputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Parent;
@@ -9,6 +10,8 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -55,30 +58,58 @@ public class Main extends Application {
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Pane menu = new FlowPane();
-        menu.setPadding(new Insets(10));
-        
-        Button single = new Button("Singleplayer");
-        Button multi = new Button("Multiplayer");
-        //single.setOnAction(singleplayer());
-        multi.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                multiplayer(primaryStage);
-            }
-        });
-
-        menu.getChildren().addAll(single, multi);
-
-        Scene scene = new Scene(menu);
+        Scene scene = new Scene(createMenu(primaryStage));
         primaryStage.setTitle("Checkers Draughts - Menu");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
+    
+    /**
+     * Erstellt ein Auswahlmenu
+     * 
+     * @return 
+     */
+    private Parent createMenu(Stage stage){
+        FlowPane menu = new FlowPane();
+        menu.setPadding(new Insets(10));
+        menu.setHgap(10);
+        menu.setVgap(10);
+        
+        //Button Icons
+        try {
+            FileInputStream inSingle = new FileInputStream("src/main/java/checkers/icon/single.png");
+        Image imgSingle = new Image(inSingle);
+        ImageView imageViewSingle = new ImageView(imgSingle);
+        FileInputStream inMulti = new FileInputStream("src/main/java/checkers/icon/multi.png");
+        Image imgMulti = new Image(inMulti);
+        ImageView imageViewMulti = new ImageView(imgMulti);
+        
+        Button single = new Button("One Player", imageViewSingle);
+        Button multi = new Button("Two Players", imageViewMulti);
+        single.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                singleplayer(stage);
+            }
+        });
+        multi.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                multiplayer(stage);
+            }
+        });
 
+        menu.getChildren().addAll(single, multi);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return menu;
+    }
+    
     /**
      * Multiplayer Modus
-     *
+     * 
      * @param stage
      */
     public void multiplayer(Stage stage) {
@@ -86,6 +117,16 @@ public class Main extends Application {
         stage.setTitle("Checkers Draughts - Multiplayer");
         stage.setScene(scene);
         stage.show();
+    }
+    
+    /**
+     * Singleplayer Modus
+     * 
+     * @param stage 
+     */
+    public void singleplayer(Stage stage){
+        System.out.println("Not implemented yet");
+        //KI stuff
     }
 
     /**
