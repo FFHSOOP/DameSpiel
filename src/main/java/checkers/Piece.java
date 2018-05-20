@@ -45,7 +45,7 @@ public class Piece extends StackPane {
 
         Ellipse ellipse = new Ellipse(TILE_SIZE * 0.3125, TILE_SIZE * 0.26);
         ellipse.setFill(type == PieceType.BLACK
-                ? Color.valueOf("#6b6b6b") : Color.valueOf("#ffffff"));
+                ? Color.valueOf("#504438") : Color.valueOf("#e7e7e7"));
 
         ellipse.setStroke(Color.BLACK);
         ellipse.setStrokeWidth(TILE_SIZE * 0.03);
