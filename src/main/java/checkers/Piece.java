@@ -65,7 +65,6 @@ public class Piece extends StackPane {
         });
     }
     
-    // by bensch
     /**
      * 
      * @return 

@@ -16,11 +16,9 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.text.Font;
 
 /**
  * Mainklasse
@@ -40,8 +38,12 @@ public class Main extends Application {
 
     private Group tileGroup = new Group(); //Felder
     private Group pieceGroup = new Group(); //Spielsteine
-    private FlowPane gameInfo = new FlowPane(); //Spielinformationen
+    private GameInfo gameInfo = new GameInfo();
 
+    //private FlowPane gameInfo = new FlowPane(); //Spielinformationen
+    //private int lostWhite = 0;
+    //private int lostBlack = 0;
+    //private int round = 0;
     private boolean hasToKill;
 
     /**
@@ -140,7 +142,7 @@ public class Main extends Application {
     private Parent createContent() {
         Pane root = new Pane();
         root.setPrefSize(WIDTH * TILE_SIZE, HEIGHT * TILE_SIZE + 200); //Groesse des Spielfeldes
-        root.getChildren().addAll(tileGroup, pieceGroup, gameInfo);
+        root.getChildren().addAll(tileGroup, pieceGroup, gameInfo.getGameInfo());
 
         //Initialer Aufbau der Spielsteine
         for (int y = 0; y < HEIGHT; y++) {
@@ -166,16 +168,6 @@ public class Main extends Application {
                 }
             }
         }
-        
-        //Spielinformationen
-        gameInfo.relocate(0, 800);
-        gameInfo.setPadding(new Insets(10));
-        gameInfo.setHgap(10);
-        gameInfo.setVgap(10);
-        Label lbZug = new Label("Zug: Der erste Spieler kann beginnen");
-        lbZug.setFont(new Font("Arial", 20));
-        gameInfo.getChildren().addAll(lbZug);
-        
         return root;
     }
 
@@ -254,6 +246,7 @@ public class Main extends Application {
     }
 
     /**
+     * Prueft ob ein Spielstein einen anderen schlagen kann
      *
      * @param piece
      * @param newX
@@ -287,7 +280,7 @@ public class Main extends Application {
             x = 1;
             y = 1;
         }
-        
+
         /*switch (direction) {
             case 1:
                 x = -1;
@@ -308,7 +301,6 @@ public class Main extends Application {
             default:
                 break;
         }*/
-
         if (newX + x >= 0 && newX + x <= 7 && newY + y >= 0 && newY + y <= 7) {
             System.out.println("x: " + (newX + x) + " y: " + (newY + y));
             System.out.println("hasPiece: " + board[newX + x][newY + y].hasPiece());
@@ -409,6 +401,8 @@ public class Main extends Application {
                         canKill(piece, newX, newY, 4, false, false);
                     }
 
+                    gameInfo.countUpRound();
+                    System.out.println(gameInfo.getRound());
                     break;
                 case KILL:
                     piece.move(newX, newY);
@@ -436,6 +430,10 @@ public class Main extends Application {
                         canKill(piece, newX, newY, 4, false, false);
                     }
 
+                    if (!hasToKill) {
+                        gameInfo.countUpRound();
+                        System.out.println(gameInfo.getRound());
+                    }
                     break;
             }
         });
