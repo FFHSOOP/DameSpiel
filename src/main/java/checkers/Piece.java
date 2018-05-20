@@ -44,8 +44,8 @@ public class Piece extends StackPane {
         bg.setTranslateY((TILE_SIZE - TILE_SIZE * 0.26 * 2) / 2 + TILE_SIZE * 0.07);
 
         Ellipse ellipse = new Ellipse(TILE_SIZE * 0.3125, TILE_SIZE * 0.26);
-        ellipse.setFill(type == PieceType.RED
-                ? Color.valueOf("#c40003") : Color.valueOf("#fff9f4"));
+        ellipse.setFill(type == PieceType.BLACK
+                ? Color.valueOf("#6b6b6b") : Color.valueOf("#ffffff"));
 
         ellipse.setStroke(Color.BLACK);
         ellipse.setStrokeWidth(TILE_SIZE * 0.03);

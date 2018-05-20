@@ -150,7 +150,7 @@ public class Main extends Application {
                 Piece piece = null;
 
                 if (y <= 2 && (x + y) % 2 != 0) {
-                    piece = makePiece(PieceType.RED, x, y);
+                    piece = makePiece(PieceType.BLACK, x, y);
                 }
 
                 if (y >= 5 && (x + y) % 2 != 0) {
@@ -354,7 +354,7 @@ public class Main extends Application {
                     board[newX][newY].setPiece(piece);
 
                     // Dame Implementierung
-                    if (!piece.isDraughts() && (newY == 7 && piece.getType() == PieceType.RED) || (newY == 0 && piece.getType() == PieceType.WHITE)) {
+                    if (!piece.isDraughts() && (newY == 7 && piece.getType() == PieceType.BLACK) || (newY == 0 && piece.getType() == PieceType.WHITE)) {
                         piece.setDraughts(true);
                     }
 
@@ -381,7 +381,7 @@ public class Main extends Application {
                     piece.move(newX, newY);
                     board[x0][y0].setPiece(null);
                     board[newX][newY].setPiece(piece);
-                    if (!piece.isDraughts() && (newY == 7 && piece.getType() == PieceType.RED) || (newY == 0 && piece.getType() == PieceType.WHITE)) {
+                    if (!piece.isDraughts() && (newY == 7 && piece.getType() == PieceType.BLACK) || (newY == 0 && piece.getType() == PieceType.WHITE)) {
                         piece.setDraughts(true);
                     }
 
