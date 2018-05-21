@@ -144,7 +144,7 @@ public class Main extends Application {
         root.setPrefSize(WIDTH * TILE_SIZE, HEIGHT * TILE_SIZE + 200); //Groesse des Spielfeldes
         root.getChildren().addAll(tileGroup, pieceGroup, gameInfo.getGameInfo());
 
-        //Initialer Aufbau der Spielsteine
+        //Initialer Aufbau der Spielsteine und der Felder. wenn (x+y) %2 == 0 true ist, haben wir ein weisses Feld
         for (int y = 0; y < HEIGHT; y++) {
             for (int x = 0; x < WIDTH; x++) {
                 Tile tile = new Tile((x + y) % 2 == 0, x, y);
@@ -182,15 +182,17 @@ public class Main extends Application {
 
         int x0 = toBoard(piece.getOldX());
         int y0 = toBoard(piece.getOldY());
-
+        
+        //wenn auf der neuen Position bereits ein Stein ist oder das Feld weiss ist oder es das Ausgangsfeld ist,
         if (board[newX][newY].hasPiece() || (newX + newY) % 2 == 0 || newY - y0 == 0) {
             return new MoveResult(MoveType.NONE);
         }
 
-        // hier erweiterung für mehr als einer killen
-        // hier erweiterung für dame auch rückwärts
+        // hier erweiterung fuer mehr als einer killen
+        // hier erweiterung fuer dame auch rueckwaerts
         ArrayList<Piece> piecesList = new ArrayList<>();
 
+        //wenn der Stein sich um 1 bewegt  und die Bewegungsrichtung stimmt oder es sich um eine Dame handelt
         if (Math.abs(newX - x0) == 1 && (newY - y0 == piece.getType().moveDir || piece.isDraughts())) {
 
             if (hasToKill) {
@@ -198,6 +200,8 @@ public class Main extends Application {
             }
 
             return new MoveResult(MoveType.NORMAL);
+            
+          
         } else if (Math.abs(newX - x0) >= 2 && (newY - y0 == piece.getType().moveDir * Math.abs(newY - y0) || piece.isDraughts())) {
 
             // tamara implementation
@@ -213,7 +217,7 @@ public class Main extends Application {
                 int y1 = y0 + directionY * i;
 
                 System.out.println(x1 + " " + y1);
-
+                //wenn 
                 if (board[x1][y1].hasPiece() && board[x1][y1].getPiece().getType() != piece.getType()) {
                     piecesList.add(board[x1][y1].getPiece());
                     if (i + 1 == Math.abs(newX - x0)) {
@@ -236,7 +240,7 @@ public class Main extends Application {
         return new MoveResult(MoveType.NONE);
     }
 
-    /**
+    /** findet heraus welchem Feld die Position entspricht
      *
      * @param pixel
      * @return
