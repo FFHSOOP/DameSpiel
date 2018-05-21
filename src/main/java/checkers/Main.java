@@ -201,7 +201,7 @@ public class Main extends Application {
 
             return new MoveResult(MoveType.NORMAL);
             
-          
+           
         } else if (Math.abs(newX - x0) >= 2 && (newY - y0 == piece.getType().moveDir * Math.abs(newY - y0) || piece.isDraughts())) {
 
             // tamara implementation
