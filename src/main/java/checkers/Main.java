@@ -39,11 +39,7 @@ public class Main extends Application {
     private Group tileGroup = new Group(); //Felder
     private Group pieceGroup = new Group(); //Spielsteine
     private GameInfo gameInfo = new GameInfo();
-
-    //private FlowPane gameInfo = new FlowPane(); //Spielinformationen
-    //private int lostWhite = 0;
-    //private int lostBlack = 0;
-    //private int round = 0;
+    
     private boolean hasToKill;
 
     /**
@@ -357,6 +353,7 @@ public class Main extends Application {
     private Piece makePiece(PieceType type, int x, int y) {
         Piece piece = new Piece(type, x, y);
 
+        //Logik nach dem loslassen
         piece.setOnMouseReleased(e -> {
 
             int newX = toBoard(piece.getLayoutX());
@@ -405,8 +402,11 @@ public class Main extends Application {
                         canKill(piece, newX, newY, 4, false, false);
                     }
 
-                    gameInfo.countUpRound();
-                    System.out.println(gameInfo.getRound());
+                    if (!hasToKill) {
+                        gameInfo.countUpRound();
+                        gameInfo.updateGameInfo();
+                        System.out.println(gameInfo.getRound());
+                    }
                     break;
                 case KILL:
                     piece.move(newX, newY);
@@ -436,6 +436,7 @@ public class Main extends Application {
 
                     if (!hasToKill) {
                         gameInfo.countUpRound();
+                        gameInfo.updateGameInfo();
                         System.out.println(gameInfo.getRound());
                     }
                     break;
