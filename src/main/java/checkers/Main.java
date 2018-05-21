@@ -39,8 +39,9 @@ public class Main extends Application {
     private Group tileGroup = new Group(); //Felder
     private Group pieceGroup = new Group(); //Spielsteine
     private GameInfo gameInfo = new GameInfo();
-    
-    private boolean hasToKill;
+
+    private boolean hasToKillLight;
+    private boolean hasToKillDark;
 
     /**
      * Main
@@ -87,17 +88,11 @@ public class Main extends Application {
 
             Button single = new Button("One Player", imageViewSingle);
             Button multi = new Button("Two Players", imageViewMulti);
-            single.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent event) {
-                    singleplayer(stage);
-                }
+            single.setOnAction((ActionEvent event) -> {
+                singleplayer(stage);
             });
-            multi.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent event) {
-                    multiplayer(stage);
-                }
+            multi.setOnAction((ActionEvent event) -> {
+                multiplayer(stage);
             });
 
             menu.getChildren().addAll(single, multi);
@@ -189,7 +184,7 @@ public class Main extends Application {
 
         if (Math.abs(newX - x0) == 1 && (newY - y0 == piece.getType().moveDir || piece.isDraughts())) {
 
-            if (hasToKill) {
+            if (hasToKillLight && (PieceType.WHITE == piece.getType()) || hasToKillDark && (PieceType.BLACK == piece.getType())) {
                 return new MoveResult(MoveType.NONE);
             }
 
@@ -221,7 +216,7 @@ public class Main extends Application {
             }
 
             // tamara implementation
-            // Working
+            // Workitamara ng
             // int x1 = x0 + (newX - x0) / 2;
             // int y1 = y0 + (newY - y0) / 2;
             //if (board[x1][y1].hasPiece() && board[x1][y1].getPiece().getType() != piece.getType()) {
@@ -253,13 +248,14 @@ public class Main extends Application {
      */
     public void canKill(Piece piece, int newX, int newY, int direction, boolean hasKill, boolean enemy) {
 
-        if (hasToKill) {
+        if ((hasToKillLight && (PieceType.WHITE == piece.getType())) || (hasToKillDark && (PieceType.BLACK == piece.getType()))) {
             return;
         }
 
         int x = 0;
         int y = 0;
 
+        //Switch-Case
         if (direction == 1) {
             x = -1;
             y = -1;
@@ -277,33 +273,17 @@ public class Main extends Application {
             y = 1;
         }
 
-        /*switch (direction) {
-            case 1:
-                x = -1;
-                y = -1;
-                break;
-            case 2:
-                x = 1;
-                y = -1;
-                break;
-            case 3:
-                x = -1;
-                y = 1;
-                break;
-            case 4:
-                x = 1;
-                y = 1;
-                break;
-            default:
-                break;
-        }*/
         if (newX + x >= 0 && newX + x <= 7 && newY + y >= 0 && newY + y <= 7) {
             System.out.println("x: " + (newX + x) + " y: " + (newY + y));
             System.out.println("hasPiece: " + board[newX + x][newY + y].hasPiece());
             System.out.println("haskill: " + hasKill);
-            if (!(board[newX + x][newY + y].hasPiece()) && hasKill) {
-                System.out.println("double kill");
-                hasToKill = true;
+            if (!(board[newX + x][newY + y].hasPiece()) && hasKill && (PieceType.WHITE == piece.getType())) {
+                System.out.println("double kill light");
+                hasToKillDark = true;
+                return;
+            } else if (!(board[newX + x][newY + y].hasPiece()) && hasKill && (PieceType.BLACK == piece.getType())) {
+                System.out.println("double kill dark");
+                hasToKillLight = true;
                 return;
             }
             if (board[newX + x][newY + y].hasPiece() && (board[newX + x][newY + y].getPiece().getType() != piece.getType())) {
@@ -312,23 +292,27 @@ public class Main extends Application {
 
                 if (newX - x >= 0 && newX - x <= 7 && newY - y >= 0 && newY - y <= 7) {
                     if (board[newX - x][newY - y].hasPiece() && (board[newX - x][newY - y].getPiece().getType() == piece.getType())) {
-                        int oppositDirection = 0;
+                        int oppositeDirection = 0;
                         if (direction == 1) {
-                            oppositDirection = 4;
+                            oppositeDirection = 4;
                         }
                         if (direction == 2) {
-                            oppositDirection = 3;
+                            oppositeDirection = 3;
                         }
                         if (direction == 3) {
-                            oppositDirection = 2;
+                            oppositeDirection = 2;
                         }
                         if (direction == 4) {
-                            oppositDirection = 1;
+                            oppositeDirection = 1;
                         }
-                        canKill(piece, newX, newY, oppositDirection, true, true);
+                        canKill(piece, newX, newY, oppositeDirection, true, true);
                     }
-                    if (!board[newX - x][newY - y].hasPiece()) {
-                        hasToKill = true;
+                    if (!board[newX - x][newY - y].hasPiece() && (PieceType.WHITE == piece.getType())) {
+                        System.out.println("reverse kill light");
+                        hasToKillDark = true;
+                    } else if (!board[newX - x][newY - y].hasPiece() && (PieceType.BLACK == piece.getType())) {
+                        System.out.println("reverse kill dark");
+                        hasToKillLight = true;
                     }
                 }
 
@@ -357,7 +341,7 @@ public class Main extends Application {
 
             MoveResult result;
 
-            if (newX < 0 || newY < 0 || newX >= WIDTH || newY >= HEIGHT) {
+            if (newX < 0 || newY < 0 || newX >= WIDTH || newY >= HEIGHT || (gameInfo.getTurn() != piece.getType())) {
                 result = new MoveResult(MoveType.NONE);
             } else {
                 result = tryMove(piece, newX, newY);
@@ -374,11 +358,6 @@ public class Main extends Application {
                     piece.move(newX, newY);
                     board[x0][y0].setPiece(null);
                     board[newX][newY].setPiece(piece);
-
-                    // Dame Implementierung
-                    if (!piece.isDraughts() && (newY == 7 && piece.getType() == PieceType.BLACK) || (newY == 0 && piece.getType() == PieceType.WHITE)) {
-                        piece.setDraughts(true);
-                    }
 
                     // hasToKill Implementierung
                     /* if ( ( board[newX + 1][newY + piece.getType().moveDir].hasPiece() && board[newX + 1][newY + piece.getType().moveDir].getPiece().getType() != piece.getType() ) ||
@@ -398,10 +377,16 @@ public class Main extends Application {
                         canKill(piece, newX, newY, 4, false, false);
                     }
 
-                    if (!hasToKill) {
+                    if (true) {
                         gameInfo.countUpRound();
+                        gameInfo.changeTurn();
                         gameInfo.updateGameInfo();
                         System.out.println(gameInfo.getRound());
+                    }
+
+                    // Dame Implementierung
+                    if (!piece.isDraughts() && (newY == 7 && piece.getType() == PieceType.BLACK) || (newY == 0 && piece.getType() == PieceType.WHITE)) {
+                        piece.setDraughts(true);
                     }
                     break;
                 case KILL:
@@ -419,7 +404,8 @@ public class Main extends Application {
                     }
                     // Piece otherPiece = result.getPiece();
 
-                    hasToKill = false;
+                    hasToKillLight = false;
+                    hasToKillDark = false;
 
                     if (piece.getType().moveDir == -1 || piece.isDraughts()) {
                         canKill(piece, newX, newY, 1, false, false);
@@ -430,8 +416,9 @@ public class Main extends Application {
                         canKill(piece, newX, newY, 4, false, false);
                     }
 
-                    if (!hasToKill) {
+                    if (true) {
                         gameInfo.countUpRound();
+                        gameInfo.changeTurn();
                         gameInfo.updateGameInfo();
                         System.out.println(gameInfo.getRound());
                     }
