@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -173,7 +172,7 @@ public class Main extends Application {
 
         int x0 = toBoard(piece.getOldX());
         int y0 = toBoard(piece.getOldY());
-        
+
         //wenn auf der neuen Position bereits ein Stein ist oder das Feld weiss ist oder es das Ausgangsfeld ist,
         if (board[newX][newY].hasPiece() || (newX + newY) % 2 == 0 || newY - y0 == 0) {
             return new MoveResult(MoveType.NONE);
@@ -191,8 +190,7 @@ public class Main extends Application {
             }
 
             return new MoveResult(MoveType.NORMAL);
-            
-           
+
         } else if (Math.abs(newX - x0) >= 2 && (newY - y0 == piece.getType().moveDir * Math.abs(newY - y0) || piece.isDraughts())) {
 
             // tamara implementation
@@ -231,7 +229,8 @@ public class Main extends Application {
         return new MoveResult(MoveType.NONE);
     }
 
-    /** findet heraus welchem Feld die Position entspricht
+    /**
+     * findet heraus welchem Feld die Position entspricht
      *
      * @param pixel
      * @return
@@ -259,8 +258,29 @@ public class Main extends Application {
         int x = 0;
         int y = 0;
 
-        //Switch-Case
-        if (direction == 1) {
+        //Direction
+        switch (direction) {
+            case 1:
+                x = -1;
+                y = -1;
+                break;
+            case 2:
+                x = 1;
+                y = -1;
+                break;
+            case 3:
+                x = -1;
+                y = 1;
+                break;
+            case 4:
+                x = 1;
+                y = 1;
+                break;
+            default:
+                break;
+        }
+
+        /*if (direction == 1) {
             x = -1;
             y = -1;
         }
@@ -275,7 +295,7 @@ public class Main extends Application {
         if (direction == 4) {
             x = 1;
             y = 1;
-        }
+        }*/
 
         if (newX + x >= 0 && newX + x <= 7 && newY + y >= 0 && newY + y <= 7) {
             System.out.println("x: " + (newX + x) + " y: " + (newY + y));

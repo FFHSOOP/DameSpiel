@@ -1,11 +1,8 @@
 package checkers;
 
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
@@ -25,7 +22,7 @@ public class GameInfo {
     private Label lbLostLight;
     private Label lbLostDark;
 
-    private PieceType turnOfLight = PieceType.BLACK;
+    private PieceType turnOf = PieceType.BLACK;
     private int lostLight = 0;
     private int lostDark = 0;
     private int round = 0;
@@ -34,7 +31,7 @@ public class GameInfo {
      * Konfiguration der Labels
      */
     public GameInfo() {
-        gameInfo = new VBox(); //Spielinformationen
+        gameInfo = new VBox(); //Vertikales Pane
         gameInfo.relocate(0, 800);
         gameInfo.setPadding(new Insets(10));
         gameInfo.setSpacing(10);
@@ -42,8 +39,8 @@ public class GameInfo {
         //gameInfo.setVgap(10);
         lbRound = new Label("Runde " + round);
         lbTurnOf = new Label("Dunkel kann beginnen");
-        lbLostLight = new Label("Verlorene Spielsteine Weiss: " + lostLight);
-        lbLostDark = new Label("Verlorene Spielsteine Schwarz: " + lostDark);
+        lbLostLight = new Label("Verlorene Spielsteine Hell: " + lostLight);
+        lbLostDark = new Label("Verlorene Spielsteine Dunkel: " + lostDark);
 
         lbRound.setFont(new Font("Arial", 20));
         lbTurnOf.setFont(new Font("Arial", 20));
@@ -55,20 +52,25 @@ public class GameInfo {
     /**
      * Gibt das Grafikelement mit den Spielinformationen aus
      *
-     * @return
+     * @return VBox mit Spielinformationen
      */
     public Parent getGameInfo() {
         return gameInfo;
     }
     
+    /**
+     * Gibt zurueck welcher Spieler am Zug ist
+     * 
+     * @return PieceType mit Farbe
+     */
     public PieceType getTurn(){
-        return turnOfLight;
+        return turnOf;
     }
 
     /**
      * Gibt die Verlorenen Spielsteine von Hell aus
      *
-     * @return
+     * @return Anzahl verlorene Spielsteine Hell
      */
     public int getLostLight() {
         return lostLight;
@@ -77,7 +79,7 @@ public class GameInfo {
     /**
      * Gibt die Verlorenen Spielsteine von Dunkel aus
      *
-     * @return
+     * @return Anzahl verlorene Spielsteine Dunkel
      */
     public int getLostDark() {
         return lostDark;
@@ -86,7 +88,7 @@ public class GameInfo {
     /**
      * Gibt die aktuelle Runde zurueck
      *
-     * @return
+     * @return Aktuelle Runde
      */
     public int getRound() {
         return round;
@@ -114,20 +116,20 @@ public class GameInfo {
     }
 
     public void changeTurn() {
-        if (turnOfLight == PieceType.WHITE) {
-            turnOfLight = PieceType.BLACK;
+        if (turnOf == PieceType.WHITE) {
+            turnOf = PieceType.BLACK;
         } else {
-            turnOfLight = PieceType.WHITE;
+            turnOf = PieceType.WHITE;
         }
     }
 
     /**
      * Gibt zurueck wer am Zug ist
      *
-     * @return
+     * @return String mit der aktuellen Farbe
      */
     private String turnOfMessage() {
-        return (turnOfLight == PieceType.WHITE ? "Runde von Hell" : "Runde von Dunkel");
+        return (turnOf == PieceType.WHITE ? "Runde von Hell" : "Runde von Dunkel");
     }
 
     /**
@@ -136,7 +138,7 @@ public class GameInfo {
     public void updateGameInfo() {
         lbRound.setText("Runde " + round);
         lbTurnOf.setText(turnOfMessage());
-        lbLostLight.setText("Verlorene Spielsteine Weiss: " + getLostLight());
-        lbLostDark.setText("Verlorene Spielsteine Schwarz: " + getLostDark());
+        lbLostLight.setText("Verlorene Spielsteine Hell: " + getLostLight());
+        lbLostDark.setText("Verlorene Spielsteine Dunkel: " + getLostDark());
     }
 }
