@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -135,7 +134,7 @@ public class Main extends Application {
         root.setPrefSize(WIDTH * TILE_SIZE, HEIGHT * TILE_SIZE + 200); //Groesse des Spielfeldes
         root.getChildren().addAll(tileGroup, pieceGroup, gameInfo.getGameInfo());
 
-        //Initialer Aufbau der Spielsteine
+        //Initialer Aufbau der Spielsteine und der Felder. wenn (x+y) %2 == 0 true ist, haben wir ein weisses Feld
         for (int y = 0; y < HEIGHT; y++) {
             for (int x = 0; x < WIDTH; x++) {
                 Tile tile = new Tile((x + y) % 2 == 0, x, y);
@@ -229,6 +228,7 @@ public class Main extends Application {
     }
 
     /**
+     * findet heraus welchem Feld die Position entspricht
      *
      * @param pixel
      * @return

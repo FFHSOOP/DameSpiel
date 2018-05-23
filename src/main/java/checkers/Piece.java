@@ -3,6 +3,7 @@ package checkers;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
+import javafx.scene.shape.SVGPath;
 
 import static checkers.Main.TILE_SIZE;
 
@@ -54,7 +55,8 @@ public class Piece extends StackPane {
         ellipse.setTranslateY((TILE_SIZE - TILE_SIZE * 0.26 * 2) / 2);
 
         getChildren().addAll(bg, ellipse);
-
+        
+        
         setOnMousePressed(e -> {
             mouseX = e.getSceneX();
             mouseY = e.getSceneY();
@@ -79,7 +81,7 @@ public class Piece extends StackPane {
      */
     public void setDraughts(boolean draughts) {
         this.draughts = draughts;
-
+/**
         Ellipse ellipse = new Ellipse(TILE_SIZE * 0.15625, TILE_SIZE * 0.13);
         ellipse.setFill(Color.BLACK);
 
@@ -89,8 +91,28 @@ public class Piece extends StackPane {
         ellipse.setTranslateY((TILE_SIZE - TILE_SIZE * 0.26 * 2) / 2);
 
         getChildren().add(ellipse);
+ **/
+        
+        
+        SVGPath svgPath = new SVGPath();
+        String path ="M" + TILE_SIZE * 0.32 + "," + TILE_SIZE * 0.06 + " " 
+        		 + TILE_SIZE * 0.23 + "," + TILE_SIZE * 0.15 + " "
+        		 + TILE_SIZE * 0.16 + "," + TILE_SIZE * 0.06 + " "
+        		 + TILE_SIZE * 0.09 + "," + TILE_SIZE * 0.15 + " "
+        		 + TILE_SIZE * 0.00 + "," + TILE_SIZE * 0.06 + " "
+        		 + TILE_SIZE * 0.02 + "," + TILE_SIZE * 0.26 + " "
+        		 + TILE_SIZE * 0.30 + "," + TILE_SIZE * 0.26 + "Z";
+     
+        svgPath.setContent(path);
+        svgPath.setTranslateX((TILE_SIZE - TILE_SIZE * 0.32 * 2 ) / 2 );
+        svgPath.setTranslateY((TILE_SIZE - TILE_SIZE * 0.26 * 2 ) / 2 );
+        svgPath.setFill(Color.valueOf("#ffff00"));
+        svgPath.setStroke(Color.BLACK);
+        svgPath.setStrokeWidth(TILE_SIZE * 0.03);
+        
+        getChildren().add(svgPath);
+        
     }
-
     /**
      * 
      * @return 
