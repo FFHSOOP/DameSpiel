@@ -93,6 +93,7 @@ public class Piece extends StackPane {
         getChildren().add(ellipse);
  **/
         
+        
         SVGPath svgPath = new SVGPath();
         String path ="M" + TILE_SIZE * 0.32 + "," + TILE_SIZE * 0.06 + " " 
         		 + TILE_SIZE * 0.23 + "," + TILE_SIZE * 0.15 + " "
