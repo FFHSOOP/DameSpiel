@@ -252,10 +252,12 @@ public class Main extends Application {
         // Abbruch wenn alte Position geprüft wird
         if (piece.getOldX() == newX && piece.getOldY() == newY) {return;}
 
+        // Abbruch wenn aktueller spiele/farbe hasToKill hat
         if ((hasToKillLight && (PieceType.WHITE == piece.getType())) || (hasToKillDark && (PieceType.BLACK == piece.getType()))) {
             return;
         }
 
+        // Richtung in x/y setzen
         int x;
         int y;
         switch (direction) {
@@ -281,12 +283,13 @@ public class Main extends Application {
                 break;
         }
 
+        // Zu überprüfendes kill feld auf gültigkeit auf spielfeld prüfen
         if (newX + x >= 0 && newX + x <= 7 && newY + y >= 0 && newY + y <= 7) {
             System.out.println("newX: " + newX + " newY: " + newY);
             System.out.println("check position x: " + (newX + x) + " y: " + (newY + y));
             System.out.println("hasPiece: " + board[newX + x][newY + y].hasPiece());
             System.out.println("haskill: " + hasKill);
-            // getround prüfung
+            // falls beim ersten durchlauf (auf vorherigen position) haskill gesetzt wurde und das zu prüfende feld frei ist, hasToKill setzen
             if (!(board[newX + x][newY + y].hasPiece()) && hasKill && (PieceType.WHITE == piece.getType())) {
                 System.out.println("set hasToKillLight");
                 hasToKillLight = true;
@@ -296,6 +299,7 @@ public class Main extends Application {
                 hasToKillDark = true;
                 return;
             }
+            // falls zu prüfendes feld durch feind besetzt ist, funktion mit haskill nochmals aufrufen und nächstes feld prüfen
             if (board[newX + x][newY + y].hasPiece() && (board[newX + x][newY + y].getPiece().getType() != piece.getType())) {
                 System.out.println("set haskill to true");
                 canKill(piece, newX + x, newY + y, direction, true, false);
@@ -320,7 +324,7 @@ public class Main extends Application {
 
                         canKill(piece, newX, newY, oppositeDirection, true, true);
                     }
-                    //
+                    // Reverse kill
                     // Wenn Feind vorne und Feld hinten frei ist
                     //
                     if (!board[newX - x][newY - y].hasPiece() && (PieceType.WHITE == piece.getType()) && ( ((-1 * x) == board[newX + x][newY + y].getPiece().getType().moveDir) || board[newX + x][newY + y].getPiece().isDraughts() )  ) {
@@ -333,6 +337,7 @@ public class Main extends Application {
                 }
 
             }
+            // Wenn enemy durch (reverse kill) kill gesetzt wurde
             if (enemy && board[newX + x][newY + y].hasPiece() && (board[newX + x][newY + y].getPiece().getType() == piece.getType())) {
                 canKill(piece, newX + x, newY + y, direction, true, true);
             }
