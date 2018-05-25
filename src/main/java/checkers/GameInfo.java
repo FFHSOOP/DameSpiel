@@ -150,13 +150,15 @@ public class GameInfo {
     public void updateGameInfo() {
         if (lostLight >= MAX_PIECES) {
             gameOver = true;
+            lbTurnOf.setText("Dunkel hat gewonnen!");
         } else if (lostDark >= MAX_PIECES) {
             gameOver = true;
+            lbTurnOf.setText("Hell hat gewonnen!");
         } else {
-            lbRound.setText("Runde " + round);
             lbTurnOf.setText(turnOfMessage());
-            lbLostLight.setText("Verlorene Spielsteine Hell: " + getLostLight());
-            lbLostDark.setText("Verlorene Spielsteine Dunkel: " + getLostDark());
         }
+        lbRound.setText("Runde " + round);
+        lbLostLight.setText("Verlorene Spielsteine Hell: " + getLostLight());
+        lbLostDark.setText("Verlorene Spielsteine Dunkel: " + getLostDark());
     }
 }
