@@ -16,16 +16,19 @@ import javafx.scene.text.Font;
  */
 public class GameInfo {
 
+    private final int MAX_PIECES = 12; //Spielsteine pro Spieler
+
     private VBox gameInfo;
     private Label lbRound;
     private Label lbTurnOf;
     private Label lbLostLight;
     private Label lbLostDark;
 
-    private PieceType turnOf = PieceType.BLACK;
-    private int lostLight = 0;
-    private int lostDark = 0;
-    private int round = 0;
+    private PieceType turnOf = PieceType.BLACK; //Runde von
+    private int lostLight = 0; //Verlorene Spielsteine Hell
+    private int lostDark = 0; //Verlorene Spielsteine Dunkel
+    private int round = 0; //Aktuelle Spielrunde
+    private boolean gameOver = false; //Spiel vorbei
 
     /**
      * Konfiguration der Labels
@@ -57,13 +60,13 @@ public class GameInfo {
     public Parent getGameInfo() {
         return gameInfo;
     }
-    
+
     /**
      * Gibt zurueck welcher Spieler am Zug ist
-     * 
+     *
      * @return PieceType mit Farbe
      */
-    public PieceType getTurn(){
+    public PieceType getTurn() {
         return turnOf;
     }
 
@@ -124,7 +127,7 @@ public class GameInfo {
     }
 
     /**
-     * Gibt zurueck wer am Zug ist
+     * Gibt als String zurueck wer am Zug ist
      *
      * @return String mit der aktuellen Farbe
      */
@@ -133,12 +136,27 @@ public class GameInfo {
     }
 
     /**
+     * Gibt zurueck ob das Spiel vorbei ist
+     *
+     * @return Wenn true ist das Spiel vorbei
+     */
+    public boolean gameOver() {
+        return gameOver;
+    }
+
+    /**
      * Aktualisiert die Spielinformationen
      */
     public void updateGameInfo() {
-        lbRound.setText("Runde " + round);
-        lbTurnOf.setText(turnOfMessage());
-        lbLostLight.setText("Verlorene Spielsteine Hell: " + getLostLight());
-        lbLostDark.setText("Verlorene Spielsteine Dunkel: " + getLostDark());
+        if (lostLight >= MAX_PIECES) {
+            gameOver = true;
+        } else if (lostDark >= MAX_PIECES) {
+            gameOver = true;
+        } else {
+            lbRound.setText("Runde " + round);
+            lbTurnOf.setText(turnOfMessage());
+            lbLostLight.setText("Verlorene Spielsteine Hell: " + getLostLight());
+            lbLostDark.setText("Verlorene Spielsteine Dunkel: " + getLostDark());
+        }
     }
 }
