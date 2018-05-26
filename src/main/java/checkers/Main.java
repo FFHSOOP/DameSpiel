@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -173,17 +172,16 @@ public class Main extends Application {
 
         int x0 = toBoard(piece.getOldX());
         int y0 = toBoard(piece.getOldY());
-        
-        //wenn auf der neuen Position bereits ein Stein ist oder das Feld weiss ist oder es das Ausgangsfeld ist,
+
         if (board[newX][newY].hasPiece() || (newX + newY) % 2 == 0 || newY - y0 == 0) {
             return new MoveResult(MoveType.NONE);
         }
 
-        // hier erweiterung fuer mehr als einer killen
-        // hier erweiterung fuer dame auch rueckwaerts
+        // hier erweiterung für mehr als einer killen
+        // hier erweiterung für dame auch rückwärts
         ArrayList<Piece> piecesList = new ArrayList<>();
 
-        //wenn der Stein sich um 1 bewegt  und die Bewegungsrichtung stimmt oder es sich um eine Dame handelt
+        // Wenn nur 1 Schritt und (Richtung stimmt oder Dame ist)
         if (Math.abs(newX - x0) == 1 && (newY - y0 == piece.getType().moveDir || piece.isDraughts())) {
 
             if (hasToKillLight && (PieceType.WHITE == piece.getType()) || hasToKillDark && (PieceType.BLACK == piece.getType())) {
@@ -191,8 +189,6 @@ public class Main extends Application {
             }
 
             return new MoveResult(MoveType.NORMAL);
-            
-           
         } else if (Math.abs(newX - x0) >= 2 && (newY - y0 == piece.getType().moveDir * Math.abs(newY - y0) || piece.isDraughts())) {
 
             // tamara implementation
@@ -208,7 +204,7 @@ public class Main extends Application {
                 int y1 = y0 + directionY * i;
 
                 System.out.println(x1 + " " + y1);
-                //wenn 
+
                 if (board[x1][y1].hasPiece() && board[x1][y1].getPiece().getType() != piece.getType()) {
                     piecesList.add(board[x1][y1].getPiece());
                     if (i + 1 == Math.abs(newX - x0)) {
@@ -231,7 +227,8 @@ public class Main extends Application {
         return new MoveResult(MoveType.NONE);
     }
 
-    /** findet heraus welchem Feld die Position entspricht
+    /**
+     * findet heraus welchem Feld die Position entspricht
      *
      * @param pixel
      * @return
@@ -252,75 +249,101 @@ public class Main extends Application {
      */
     public void canKill(Piece piece, int newX, int newY, int direction, boolean hasKill, boolean enemy) {
 
+        // Abbruch wenn alte Position geprüft wird
+        if (piece.getOldX() == newX && piece.getOldY() == newY) {
+            return;
+        }
+
+        // Abbruch wenn aktueller spiele/farbe hasToKill hat
         if ((hasToKillLight && (PieceType.WHITE == piece.getType())) || (hasToKillDark && (PieceType.BLACK == piece.getType()))) {
             return;
         }
 
-        int x = 0;
-        int y = 0;
+        // Richtung in x/y setzen
+        int x;
+        int y;
+        switch (direction) {
+            case 1:
+                x = -1;
+                y = -1;
+                break;
+            case 2:
+                x = 1;
+                y = -1;
+                break;
+            case 3:
+                x = -1;
+                y = 1;
+                break;
+            case 4:
+                x = 1;
+                y = 1;
+                break;
+            default:
+                x = 0;
+                y = 0;
+                break;
+        }
 
-        //Switch-Case
-        if (direction == 1) {
-            x = -1;
-            y = -1;
-        }
-        if (direction == 2) {
-            x = 1;
-            y = -1;
-        }
-        if (direction == 3) {
-            x = -1;
-            y = 1;
-        }
-        if (direction == 4) {
-            x = 1;
-            y = 1;
-        }
-
+        // Zu überprüfendes kill feld auf gültigkeit auf spielfeld prüfen
         if (newX + x >= 0 && newX + x <= 7 && newY + y >= 0 && newY + y <= 7) {
-            System.out.println("x: " + (newX + x) + " y: " + (newY + y));
+            System.out.println("newX: " + newX + " newY: " + newY);
+            System.out.println("check position x: " + (newX + x) + " y: " + (newY + y));
             System.out.println("hasPiece: " + board[newX + x][newY + y].hasPiece());
             System.out.println("haskill: " + hasKill);
+            // falls beim ersten durchlauf (auf vorherigen position) haskill gesetzt wurde und das zu prüfende feld frei ist, hasToKill setzen
             if (!(board[newX + x][newY + y].hasPiece()) && hasKill && (PieceType.WHITE == piece.getType())) {
-                System.out.println("double kill light");
-                hasToKillDark = true;
-                return;
-            } else if (!(board[newX + x][newY + y].hasPiece()) && hasKill && (PieceType.BLACK == piece.getType())) {
-                System.out.println("double kill dark");
+                System.out.println("set hasToKillLight");
                 hasToKillLight = true;
                 return;
+            } else if (!(board[newX + x][newY + y].hasPiece()) && hasKill && (PieceType.BLACK == piece.getType())) {
+                System.out.println("set hasToKillDark");
+                hasToKillDark = true;
+                return;
             }
+            // falls zu prüfendes feld durch feind besetzt ist, funktion mit haskill nochmals aufrufen und nächstes feld prüfen
             if (board[newX + x][newY + y].hasPiece() && (board[newX + x][newY + y].getPiece().getType() != piece.getType())) {
-                System.out.println("kill");
+                System.out.println("set haskill to true");
                 canKill(piece, newX + x, newY + y, direction, true, false);
 
+                // Hinter piece prüfen ob gleiche farbe, falls ja bis an rand prüfen ob gleiche farbe. falls ja kann feind vor piece nicht killen
                 if (newX - x >= 0 && newX - x <= 7 && newY - y >= 0 && newY - y <= 7) {
                     if (board[newX - x][newY - y].hasPiece() && (board[newX - x][newY - y].getPiece().getType() == piece.getType())) {
-                        int oppositeDirection = 0;
-                        if (direction == 1) {
-                            oppositeDirection = 4;
+                        int oppositeDirection;
+                        switch (direction) {
+                            case 1:
+                                oppositeDirection = 4;
+                                break;
+                            case 2:
+                                oppositeDirection = 3;
+                                break;
+                            case 3:
+                                oppositeDirection = 2;
+                                break;
+                            case 4:
+                                oppositeDirection = 1;
+                                break;
+                            default:
+                                oppositeDirection = 0;
+                                break;
                         }
-                        if (direction == 2) {
-                            oppositeDirection = 3;
-                        }
-                        if (direction == 3) {
-                            oppositeDirection = 2;
-                        }
-                        if (direction == 4) {
-                            oppositeDirection = 1;
-                        }
+
                         canKill(piece, newX, newY, oppositeDirection, true, true);
                     }
-                    if (!board[newX - x][newY - y].hasPiece() && (PieceType.WHITE == piece.getType())) {
-                        System.out.println("reverse kill light");
-                        hasToKillDark = true;
-                    } else if (!board[newX - x][newY - y].hasPiece() && (PieceType.BLACK == piece.getType())) {
+                    // Reverse kill
+                    // Wenn Feind vorne und Feld hinten frei ist
+                    //
+                    if (!board[newX - x][newY - y].hasPiece() && (PieceType.WHITE == piece.getType()) && (((-1 * x) == board[newX + x][newY + y].getPiece().getType().moveDir) || board[newX + x][newY + y].getPiece().isDraughts())) {
                         System.out.println("reverse kill dark");
+                        hasToKillDark = true;
+                    } else if (!board[newX - x][newY - y].hasPiece() && (PieceType.BLACK == piece.getType()) && (((-1 * x) == board[newX + x][newY + y].getPiece().getType().moveDir) || board[newX + x][newY + y].getPiece().isDraughts())) {
+                        System.out.println("reverse kill light");
                         hasToKillLight = true;
                     }
                 }
 
             }
+            // Wenn enemy durch (reverse kill) kill gesetzt wurde
             if (enemy && board[newX + x][newY + y].hasPiece() && (board[newX + x][newY + y].getPiece().getType() == piece.getType())) {
                 canKill(piece, newX + x, newY + y, direction, true, true);
             }
@@ -381,12 +404,10 @@ public class Main extends Application {
                         canKill(piece, newX, newY, 4, false, false);
                     }
 
-                    if (true) {
-                        gameInfo.countUpRound();
-                        gameInfo.changeTurn();
-                        gameInfo.updateGameInfo();
-                        System.out.println(gameInfo.getRound());
-                    }
+                    gameInfo.countUpRound();
+                    gameInfo.changeTurn();
+                    gameInfo.updateGameInfo();
+                    System.out.println(gameInfo.getRound());
 
                     // Dame Implementierung
                     if (!piece.isDraughts() && (newY == 7 && piece.getType() == PieceType.BLACK) || (newY == 0 && piece.getType() == PieceType.WHITE)) {
@@ -420,12 +441,17 @@ public class Main extends Application {
                         canKill(piece, newX, newY, 4, false, false);
                     }
 
-                    if (true) {
-                        gameInfo.countUpRound();
-                        gameInfo.changeTurn();
-                        gameInfo.updateGameInfo();
-                        System.out.println(gameInfo.getRound());
+                    //Verlorene Spielsteine hochzaehlen
+                    if (piece.getType() == PieceType.WHITE) {
+                        gameInfo.countUpLostDark();
+                    } else if (piece.getType() == PieceType.BLACK) {
+                        gameInfo.countUpLostLight();
                     }
+                    gameInfo.countUpRound();
+                    gameInfo.changeTurn();
+                    gameInfo.updateGameInfo();
+                    System.out.println(gameInfo.getRound());
+
                     break;
             }
         });
