@@ -20,7 +20,7 @@ public class Piece extends StackPane {
     private PieceType type; //Spielstein Typ
 
     private double mouseX, mouseY; //Mausposition
-    private double oldX, oldY; //Alte Position
+    private double oldX, oldY; //Alte Position 
 
     private boolean draughts;
 
@@ -140,8 +140,8 @@ public class Piece extends StackPane {
     /**
      * Verschiebt den Spielstein
      *
-     * @param x
-     * @param y
+     * @param x Position in Spielfeldkoordinate 0 bis WIDTH - 1
+     * @param y Position in Spielfeldkoordinate 0 bis HEIGHT - 1
      */
     public void move(int x, int y) {
         oldX = x * TILE_SIZE;
