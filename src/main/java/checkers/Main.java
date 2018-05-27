@@ -233,15 +233,9 @@ public class Main extends Application {
     /**
      * Prueft ob ein Spielstein einen anderen schlagen kann
      *
-     * @param piece
-     * @param newX
-     * @param newY
+     * @param activePiece
      * @param direction
-     * @param hasKill
-     * @param enemy
      */
-
-
     public void checkKill(Piece activePiece, int direction) {
 
         int oldX = toBoard(activePiece.getOldX());
@@ -319,6 +313,10 @@ public class Main extends Application {
         }
     }
 
+    /**
+     * 
+     * @param piece 
+     */
     public void canKill(Piece piece) {
 
 
@@ -421,6 +419,13 @@ public class Main extends Application {
 
                     canKill(piece);
 
+                    //Verlorene Spielsteine hochzaehlen
+                    if (piece.getType() == PieceType.WHITE) {
+                        gameInfo.countUpLostDark();
+                    } else if (piece.getType() == PieceType.BLACK) {
+                        gameInfo.countUpLostLight();
+                    }
+                    
                     gameInfo.countUpRound();
                     gameInfo.changeTurn();
                     gameInfo.updateGameInfo();
