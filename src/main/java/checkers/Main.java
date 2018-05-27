@@ -315,6 +315,7 @@ public class Main extends Application {
 
     /**
      * 
+     * 
      * @param piece 
      */
     public void canKill(Piece piece) {
