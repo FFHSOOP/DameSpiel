@@ -177,9 +177,10 @@ public class Main extends Application {
             return new MoveResult(MoveType.NONE);
         }
 
-        // hier erweiterung für mehr als einer killen
-        // hier erweiterung für dame auch rückwärts
-        ArrayList<Piece> piecesList = new ArrayList<>();
+
+        // alte implementation für mehrere kills
+        // ArrayList<Piece> piecesList = new ArrayList<>();
+
 
         // Wenn nur 1 Schritt und (Richtung stimmt oder Dame ist)
         if (Math.abs(newX - x0) == 1 && (newY - y0 == piece.getType().moveDir || piece.isDraughts())) {
@@ -191,8 +192,15 @@ public class Main extends Application {
             return new MoveResult(MoveType.NORMAL);
         } else if (Math.abs(newX - x0) == 2 && newY - y0 == piece.getType().moveDir * 2 || piece.isDraughts()) {
 
-            // tamara implementation
-            int directionY = (newY - y0) / Math.abs(newY - y0);
+            int x1 = x0 + (newX - x0) / 2;
+            int y1 = y0 + (newY - y0) / 2;
+
+            if (board[x1][y1].hasPiece() && board[x1][y1].getPiece().getType() != piece.getType()) {
+                return new MoveResult(MoveType.KILL, board[x1][y1].getPiece());
+            }
+
+            // alte implementation für mehrere kills
+            /* int directionY = (newY - y0) / Math.abs(newY - y0);
             int directionX = (newX - x0) / Math.abs(newX - x0);
             System.out.println(newX);
             System.out.println(newY);
@@ -213,7 +221,7 @@ public class Main extends Application {
                 } else {
                     break;
                 }
-            }
+            }*/
 
         }
 
@@ -412,11 +420,15 @@ public class Main extends Application {
                         piece.setDraughts(true);
                     }
 
-                    // hier code für mehrere kills
-                    for (Piece killPiece : result.getPiecesList()) {
+                    // alte implementation für mehrere kills
+                    /* for (Piece killPiece : result.getPiecesList()) {
                         board[toBoard(killPiece.getOldX())][toBoard(killPiece.getOldY())].setPiece(null);
                         pieceGroup.getChildren().remove(killPiece);
-                    }
+                    }*/
+
+                    Piece otherPiece = result.getPiece();
+                    board[toBoard(otherPiece.getOldX())][toBoard(otherPiece.getOldY())].setPiece(null);
+                    pieceGroup.getChildren().remove(otherPiece);
 
                     canKill(piece);
 

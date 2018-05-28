@@ -13,23 +13,37 @@ import java.util.ArrayList;
 public class MoveResult {
 
     private MoveType type;
-    private ArrayList<Piece> piecesList = new ArrayList<>();
+    private Piece piece;
+
 
     public MoveResult(MoveType type) {
         this(type, null);
     }
 
-    public MoveResult(MoveType type, ArrayList<Piece> piecesList) {
+    public MoveResult(MoveType type, Piece piece) {
         this.type = type;
-        this.piecesList = piecesList;
+        this.piece = piece;
     }
 
     public MoveType getType() {
         return type;
     }
 
-    public ArrayList<Piece> getPiecesList() {
-        return piecesList;
+    public Piece getPiece() {
+        return piece;
     }
+
+
+    // alte implementation für mehrere kills
+    // private ArrayList<Piece> piecesList = new ArrayList<>();
+
+    /* public ArrayList<Piece> getPiecesList() {
+        return piecesList;
+    }*/
+
+    /*public MoveResult(MoveType type, ArrayList<Piece> piecesList) {
+        this.type = type;
+        this.piecesList = piecesList;
+    }*/
 
 }
