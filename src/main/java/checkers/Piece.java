@@ -5,7 +5,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.SVGPath;
 
-import static checkers.Main.TILE_SIZE;
+import static checkers.Game.TILE_SIZE;
 
 /**
  * Repraesentiert einen Spielstein

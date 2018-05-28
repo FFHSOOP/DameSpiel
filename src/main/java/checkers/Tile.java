@@ -22,10 +22,10 @@ public class Tile extends Rectangle {
      * @param y 
      */
     public Tile(boolean light, int x, int y) {
-        setWidth(Main.TILE_SIZE);
-        setHeight(Main.TILE_SIZE);
+        setWidth(Game.TILE_SIZE);
+        setHeight(Game.TILE_SIZE);
 
-        relocate(x * Main.TILE_SIZE, y * Main.TILE_SIZE);
+        relocate(x * Game.TILE_SIZE, y * Game.TILE_SIZE);
 
         setFill(light ? Color.valueOf("#fff9e9") : Color.valueOf("#986430"));
     }
