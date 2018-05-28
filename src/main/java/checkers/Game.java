@@ -24,7 +24,7 @@ public class Game {
     public static final int WIDTH = 8; //Anzahl Felder Breite
     public static final int HEIGHT = 8; //Anzahl Felder Hoehe
 
-    private checkers.Tile[][] board = new Tile[WIDTH][HEIGHT]; //Spielbrett mit allen Tiles
+    private Tile[][] board = new Tile[WIDTH][HEIGHT]; //Spielbrett mit allen Tiles
 
     private Group tileGroup = new Group(); //Felder
     private Group pieceGroup = new Group(); //Spielsteine
@@ -218,7 +218,7 @@ public class Game {
                 }
 
                 System.out.println("NORMAL");
-                
+
                 if (gameMode == 2) {
                     singlePlayer();
                 }
@@ -280,9 +280,9 @@ public class Game {
     /**
      * Gibt zurueck was fuer ein MoveType durchgefuehrt wird
      *
-     * @param piece
-     * @param newX
-     * @param newY
+     * @param piece Spielstein
+     * @param newX neue X Position
+     * @param newY neue Y Position
      * @return MoveType (NONE, NORMAL, KILL)
      */
     private MoveResult tryMove(Piece piece, int newX, int newY) {
@@ -465,12 +465,37 @@ public class Game {
     }
 
     /**
-     * Macht im Singleplayer einen autokill
+     * Singleplayer Modus
      */
     public void singlePlayer() {
         //Autokill falls hasToKillLight
         if (hasToKillLight) {
             performMove(nextPiece, nextX, nextY);
+        } else {
+            for (int i = 0; i < WIDTH; i++) {
+                for (int q = 0; q < HEIGHT; q++) {
+                    if (board[i][q].hasPiece()) {
+                        if (board[i][q].getPiece().getType() == PieceType.WHITE) {
+                            Piece piece = board[i][q].getPiece();
+                            if ((toBoard(piece.getOldX()) - 1)>=0 && (toBoard(piece.getOldY()) - 1)>=0 && tryMove(piece, toBoard(piece.getOldX()) - 1, toBoard(piece.getOldY()) - 1).getType() == MoveType.NORMAL) {
+                                performMove(piece, toBoard(piece.getOldX()) - 1, toBoard(piece.getOldY()) - 1);
+                                break;
+                            } else if ((toBoard(piece.getOldX()) + 1)<HEIGHT && (toBoard(piece.getOldY()) - 1)>=0 && tryMove(piece, toBoard(piece.getOldX()) + 1, toBoard(piece.getOldY()) - 1).getType() == MoveType.NORMAL) {
+                                performMove(piece, toBoard(piece.getOldX()) + 1, toBoard(piece.getOldY()) - 1);
+                                break;
+                            } else if (piece.isDraughts()) {
+                                if ((toBoard(piece.getOldX()) + 1)<HEIGHT && (toBoard(piece.getOldY()) + 1)<WIDTH && tryMove(piece, toBoard(piece.getOldX()) + 1, toBoard(piece.getOldY()) + 1).getType() == MoveType.NORMAL) {
+                                    performMove(piece, toBoard(piece.getOldX()) + 1, toBoard(piece.getOldY()) + 1);
+                                    break;
+                                } else if ((toBoard(piece.getOldX()) - 1)>=0 && (toBoard(piece.getOldY()) + 1)<WIDTH && tryMove(piece, toBoard(piece.getOldX()) - 1, toBoard(piece.getOldY()) + 1).getType() == MoveType.NORMAL) {
+                                    performMove(piece, toBoard(piece.getOldX()) - 1, toBoard(piece.getOldY()) + 1);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
