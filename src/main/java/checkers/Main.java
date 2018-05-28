@@ -444,11 +444,11 @@ public class Main extends Application {
                 } else if (piece.getType() == PieceType.BLACK) {
                     gameInfo.countUpLostLight();
                 }
-
-                gameInfo.countUpRound();
-
-                if ( (gameInfo.getTurn() == PieceType.WHITE && !hasToKillLight) || (gameInfo.getTurn() == PieceType.BLACK && !hasToKillDark) ) gameInfo.changeTurn();
-
+                //Zug wechseln und Runde hochzaehlen
+                if ( (gameInfo.getTurn() == PieceType.WHITE && !hasToKillLight) || (gameInfo.getTurn() == PieceType.BLACK && !hasToKillDark) ){
+                    gameInfo.countUpRound();
+                    gameInfo.changeTurn();
+                }
                 gameInfo.updateGameInfo();
                 System.out.println(gameInfo.getRound());
 
