@@ -203,7 +203,7 @@ public class Game {
      * @param newX neue X Position
      * @param newY neue Y Position
      */
-    private void performMove(Piece piece, int newX, int newY) {
+    public void performMove(Piece piece, int newX, int newY) {
         MoveResult result;
 
         //Check ob Spieler am Zug ist
@@ -355,7 +355,7 @@ public class Game {
      * @param pixel Pixelposition auf dem Spielbrett
      * @return Spielbrettposition
      */
-    private int toBoard(double pixel) {
+    public int toBoard(double pixel) {
         return (int) (pixel + TILE_SIZE / 2) / TILE_SIZE;
     }
 
