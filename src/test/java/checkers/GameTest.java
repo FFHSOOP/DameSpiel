@@ -16,6 +16,7 @@ public class GameTest {
     
     //Testfixture
     private Game game;
+    private Stage primaryStage;
     
     
       @BeforeClass
@@ -29,10 +30,16 @@ public class GameTest {
     @Before
     public void initTestFixtures(){
 	game = new Game();
+	
+	primaryStage = new Stage();
+//	game.multiplayer(primaryStage);
 
     }
     
-    
+    @Test
+    public void testSpielbrettInitialisierung() {
+	assertTrue(true);
+    }
 
 
     @Test

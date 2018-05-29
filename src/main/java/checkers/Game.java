@@ -66,6 +66,16 @@ public class Game {
     public boolean getHasToKillDark() {
 	return hasToKillDark;
     }
+    
+    public int getGameMode() {
+	return gameMode;
+    }
+    
+    public void setGameMode(int mode) {
+	gameMode = mode;
+    }
+    
+    
 
     //Singleplayer
     private Piece nextPiece;
@@ -141,7 +151,7 @@ public class Game {
      *
      * @return
      */
-    private Parent createContent() {
+    public Parent createContent() {
         Pane root = new Pane();
         root.setPrefSize(WIDTH * TILE_SIZE, HEIGHT * TILE_SIZE + 200); //Groesse des Spielfeldes inkl. Infobereich
         root.getChildren().addAll(tileGroup, pieceGroup, gameInfo.getGameInfo());
