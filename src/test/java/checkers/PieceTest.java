@@ -45,8 +45,8 @@ public class PieceTest {
     @Test
     public void testAbortMove() {
         piece.abortMove();
-        assertTrue("Position wurde nicht geaendert", piece.getOldX() / Main.TILE_SIZE == xPos && 
-        	    piece.getOldY() / Main.TILE_SIZE == yPos);
+        assertTrue("Position wurde nicht geaendert", piece.getOldX() / Game.TILE_SIZE == xPos && 
+        	    piece.getOldY() / Game.TILE_SIZE == yPos);
         assertTrue("Position Grafikposition und Feldposition stimmen ueberein", piece.getOldX() == 
         	    piece.getLayoutX() && piece.getOldY() == piece.getLayoutY());
     }
@@ -57,8 +57,8 @@ public class PieceTest {
     @Test
     public void testMove() {
 	piece.move(newXPos, newYPos);
-	assertTrue("Piece wurde auf richtiges Feld verschoben", piece.getLayoutX() / Main.TILE_SIZE == 
-		newXPos && piece.getLayoutY() / Main.TILE_SIZE == newYPos);
+	assertTrue("Piece wurde auf richtiges Feld verschoben", piece.getLayoutX() / Game.TILE_SIZE == 
+		newXPos && piece.getLayoutY() / Game.TILE_SIZE == newYPos);
 	assertTrue("Position Grafikposition und Feldposition stimmen ueberein", 
 		    piece.getOldX() == piece.getLayoutX() && piece.getOldY() == piece.getLayoutY());
 	

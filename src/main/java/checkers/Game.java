@@ -24,14 +24,46 @@ public class Game {
     public static final int WIDTH = 8; //Anzahl Felder Breite
     public static final int HEIGHT = 8; //Anzahl Felder Hoehe
 
-    private checkers.Tile[][] board = new Tile[WIDTH][HEIGHT]; //Spielbrett mit allen Tiles
+    private checkers.Tile[][] board; // Spielbrett
 
-    private Group tileGroup = new Group(); //Felder
-    private Group pieceGroup = new Group(); //Spielsteine
-    private GameInfo gameInfo = new GameInfo();
+    private Group tileGroup; //Felder
+    private Group pieceGroup; //Spielsteine
+    private GameInfo gameInfo;
 
     private boolean hasToKillLight;
     private boolean hasToKillDark;
+    
+    public Game() {
+	tileGroup = new Group();
+	pieceGroup = new Group();
+	gameInfo = new GameInfo();
+	board = new Tile[WIDTH][HEIGHT]; //Spielbrett mit allen Tiles
+	
+    }
+    
+    public Tile[][] getBoard() {
+	return board;
+    }
+    
+    public Group getTileGroup() {
+	return tileGroup;
+    }
+    
+    public Group getPieceGroup() {
+	return pieceGroup;
+    }
+    
+    public GameInfo getGameInfo() {
+	return gameInfo;
+    }
+    
+    public boolean getHasToKillLight() {
+	return hasToKillLight;
+    }
+    
+    public boolean getHasToKillDark() {
+	return hasToKillDark;
+    }
 
     public Parent createMenu(Stage stage) {
         FlowPane menu = new FlowPane();
