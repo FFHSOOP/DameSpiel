@@ -30,6 +30,8 @@ public class Game {
     private Group pieceGroup; //Spielsteine
     private GameInfo gameInfo;
 
+    private int gameMode; //1=Multi, 2=Single
+
     private boolean hasToKillLight;
     private boolean hasToKillDark;
     
@@ -65,6 +67,17 @@ public class Game {
 	return hasToKillDark;
     }
 
+    //Singleplayer
+    private Piece nextPiece;
+    private int nextX;
+    private int nextY;
+
+    /**
+     * Hauptmenu
+     *
+     * @param stage
+     * @return
+     */
     public Parent createMenu(Stage stage) {
         FlowPane menu = new FlowPane();
         menu.setPadding(new Insets(10));
@@ -103,6 +116,7 @@ public class Game {
      * @param stage
      */
     public void multiplayer(Stage stage) {
+        gameMode = 1;
         Scene scene = new Scene(createContent());
         stage.setTitle("Checkers Draughts - Multiplayer");
         stage.setScene(scene);
@@ -115,8 +129,11 @@ public class Game {
      * @param stage
      */
     public void singleplayer(Stage stage) {
-        System.out.println("Not implemented yet");
-        //KI stuff
+        gameMode = 2;
+        Scene scene = new Scene(createContent());
+        stage.setTitle("Checkers Draughts - Singleplayer");
+        stage.setScene(scene);
+        stage.show();
     }
 
     /**
@@ -126,7 +143,7 @@ public class Game {
      */
     private Parent createContent() {
         Pane root = new Pane();
-        root.setPrefSize(WIDTH * TILE_SIZE, HEIGHT * TILE_SIZE + 200); //Groesse des Spielfeldes
+        root.setPrefSize(WIDTH * TILE_SIZE, HEIGHT * TILE_SIZE + 200); //Groesse des Spielfeldes inkl. Infobereich
         root.getChildren().addAll(tileGroup, pieceGroup, gameInfo.getGameInfo());
 
         //Initialer Aufbau der Spielsteine und der Felder. wenn (x+y) %2 == 0 true ist, haben wir ein weisses Feld
@@ -157,10 +174,148 @@ public class Game {
     }
 
     /**
-     * @param piece
-     * @param newX
-     * @param newY
+     * Erstellt die initialen Spielsteine
+     *
+     * @param type
+     * @param x
+     * @param y
      * @return
+     */
+    private Piece makePiece(PieceType type, int x, int y) {
+        Piece piece = new Piece(type, x, y);
+
+        //Logik nach dem loslassen
+        piece.setOnMouseReleased(e -> {
+
+            int newX = toBoard(piece.getLayoutX());
+            int newY = toBoard(piece.getLayoutY());
+
+            performMove(piece, newX, newY);
+        });
+
+        return piece;
+    }
+
+    /**
+     * Fuehrt den Move aus
+     *
+     * @param piece Spielstein
+     * @param newX neue X Position
+     * @param newY neue Y Position
+     */
+    private void performMove(Piece piece, int newX, int newY) {
+        MoveResult result;
+
+        //Check ob Spieler am Zug ist
+        if (gameInfo.getTurn() == piece.getType()) {
+            //Check ob neue Position stimmen kann
+            if (newX < 0 || newY < 0 || newX >= WIDTH || newY >= HEIGHT) {
+                result = new MoveResult(MoveType.NONE);
+            } else {
+                result = tryMove(piece, newX, newY);
+            }
+        } else {
+            System.out.println("Sorry not your turn");
+            result = new MoveResult(MoveType.NONE);
+        }
+
+        int x0 = toBoard(piece.getOldX());
+        int y0 = toBoard(piece.getOldY());
+
+        switch (result.getType()) {
+            case NONE:
+                piece.abortMove();
+                System.out.println("NONE");
+                break;
+            case NORMAL:
+                piece.move(newX, newY);
+                board[x0][y0].setPiece(null);
+                board[newX][newY].setPiece(piece);
+
+                // Dame Implementierung
+                if (!piece.isDraughts() && (newY == 7 && piece.getType() == PieceType.BLACK) || (newY == 0 && piece.getType() == PieceType.WHITE)) {
+                    piece.setDraughts(true);
+                }
+
+                // check ob gegner killen können für nächsten turn
+                canKill(piece);
+
+                gameInfo.countUpRound();
+                gameInfo.changeTurn();
+                gameInfo.updateGameInfo();
+                System.out.println(gameInfo.getRound());
+
+                if (gameMode == 2) {
+
+                }
+
+                System.out.println("NORMAL");
+
+                if (gameMode == 2) {
+                    singlePlayer();
+                }
+                break;
+            case KILL:
+
+                piece.move(newX, newY);
+                board[x0][y0].setPiece(null);
+                board[newX][newY].setPiece(piece);
+
+                if (!piece.isDraughts() && (newY == 7 && piece.getType() == PieceType.BLACK) || (newY == 0 && piece.getType() == PieceType.WHITE)) {
+                    piece.setDraughts(true);
+                }
+
+                // alte implementation für mehrere kills
+                /* for (Piece killPiece : result.getPiecesList()) {
+                        board[toBoard(killPiece.getOldX())][toBoard(killPiece.getOldY())].setPiece(null);
+                        pieceGroup.getChildren().remove(killPiece);
+                    }*/
+                Piece otherPiece = result.getPiece();
+                board[toBoard(otherPiece.getOldX())][toBoard(otherPiece.getOldY())].setPiece(null);
+                pieceGroup.getChildren().remove(otherPiece);
+
+                // check ob gegner killen können für nächsten turn
+                canKill(piece);
+
+                // check ob gleicher stein nochmals killen kann
+                if (piece.getType() == PieceType.BLACK || piece.isDraughts()) {
+                    checkKill(piece, 3);
+                    checkKill(piece, 4);
+                }
+                if (piece.getType() == PieceType.WHITE || piece.isDraughts()) {
+                    checkKill(piece, 1);
+                    checkKill(piece, 2);
+                }
+
+                //Verlorene Spielsteine hochzaehlen
+                if (piece.getType() == PieceType.WHITE) {
+                    gameInfo.countUpLostDark();
+                } else if (piece.getType() == PieceType.BLACK) {
+                    gameInfo.countUpLostLight();
+                }
+                //Zug wechseln und Runde hochzaehlen
+                if ((gameInfo.getTurn() == PieceType.WHITE && !hasToKillLight) || (gameInfo.getTurn() == PieceType.BLACK && !hasToKillDark)) {
+                    gameInfo.countUpRound();
+                    gameInfo.changeTurn();
+                }
+                gameInfo.updateGameInfo();
+                System.out.println(gameInfo.getRound());
+                System.out.println("KILL");
+
+                if (gameMode == 2) {
+                    singlePlayer();
+                }
+                break;
+        }
+    }
+
+    /**
+     * Gibt zurueck was fuer ein MoveType durchgefuehrt wird
+     *
+     * @param piece Spielstein
+     * @param newX neue X Position
+     * @param newY neue Y Position
+     * @return MoveType (NONE, NORMAL, KILL)
      */
     private MoveResult tryMove(Piece piece, int newX, int newY) {
 
@@ -171,11 +326,8 @@ public class Game {
             return new MoveResult(MoveType.NONE);
         }
 
-
         // alte implementation für mehrere kills
         // ArrayList<Piece> piecesList = new ArrayList<>();
-
-
         // Wenn nur 1 Schritt und (Richtung stimmt oder Dame ist)
         if (Math.abs(newX - x0) == 1 && (newY - y0 == piece.getType().moveDir || piece.isDraughts())) {
 
@@ -192,44 +344,61 @@ public class Game {
             if (board[x1][y1].hasPiece() && board[x1][y1].getPiece().getType() != piece.getType()) {
                 return new MoveResult(MoveType.KILL, board[x1][y1].getPiece());
             }
-
-            // alte implementation für mehrere kills
-            /* int directionY = (newY - y0) / Math.abs(newY - y0);
-            int directionX = (newX - x0) / Math.abs(newX - x0);
-            System.out.println(newX);
-            System.out.println(newY);
-            System.out.println(x0);
-            System.out.println(directionX + " " + directionY);
-
-            for (int i = 1; i < Math.abs(newX - x0); i++) {
-                int x1 = x0 + directionX * i;
-                int y1 = y0 + directionY * i;
-
-                System.out.println(x1 + " " + y1);
-
-                if (board[x1][y1].hasPiece() && board[x1][y1].getPiece().getType() != piece.getType()) {
-                    piecesList.add(board[x1][y1].getPiece());
-                    if (i + 1 == Math.abs(newX - x0)) {
-                        return new MoveResult(MoveType.KILL, piecesList);
-                    }
-                } else {
-                    break;
-                }
-            }*/
-
         }
 
         return new MoveResult(MoveType.NONE);
     }
 
     /**
-     * findet heraus welchem Feld die Position entspricht
+     * Findet heraus welchem Feld die Position entspricht
      *
-     * @param pixel
-     * @return
+     * @param pixel Pixelposition auf dem Spielbrett
+     * @return Spielbrettposition
      */
     private int toBoard(double pixel) {
         return (int) (pixel + TILE_SIZE / 2) / TILE_SIZE;
+    }
+
+    /**
+     * Prueft ob ein Spielstein einen anderen schlagen kann
+     *
+     * @param piece
+     */
+    public void canKill(Piece piece) {
+
+        hasToKillLight = false;
+        hasToKillDark = false;
+
+        PieceType currentPlayer = gameInfo.getTurn();
+
+        System.out.println("Size: " + pieceGroup.getChildren().size());
+
+        for (int i = 0; i < pieceGroup.getChildren().size(); i++) {
+
+            //if (hasToKillLight && hasToKillDark) break;
+            // änderungen bevor mehrfach nacheinander kill
+            if (hasToKillLight || hasToKillDark) {
+                break;
+            }
+
+            Node node = pieceGroup.getChildren().get(i);
+            Piece activePiece = (Piece) node;
+
+            // änderungen bevor mehrfach nacheinander kill
+            if (activePiece.getType() != currentPlayer) {
+
+                if (activePiece.getType() == PieceType.BLACK || activePiece.isDraughts()) {
+                    checkKill(activePiece, 3);
+                    checkKill(activePiece, 4);
+                }
+
+                if (activePiece.getType() == PieceType.WHITE || activePiece.isDraughts()) {
+                    checkKill(activePiece, 1);
+                    checkKill(activePiece, 2);
+                }
+
+            }
+        }
     }
 
     /**
@@ -271,9 +440,9 @@ public class Game {
 
         // Zu überprüfendes kill feld auf gültigkeit auf spielfeld prüfen
         if (oldX + x >= 0 && oldX + x <= 7 && oldY + y >= 0 && oldY + y <= 7) {
-            System.out.println("oldX: " + oldX + " oldY: " + oldY);
-            System.out.println("check position x: " + (oldX + x) + " y: " + (oldY + y));
-            System.out.println("hasPiece: " + board[oldX + x][oldY + y].hasPiece());
+            //System.out.println("oldX: " + oldX + " oldY: " + oldY);
+            //System.out.println("check position x: " + (oldX + x) + " y: " + (oldY + y));
+            //System.out.println("hasPiece: " + board[oldX + x][oldY + y].hasPiece());
 
             // falls zu prüfendes feld durch feind besetzt ist, funktion mit haskill nochmals aufrufen und nächstes feld prüfen
             // (oldY - (oldY + y) != activePiece.getType().moveDir || board[oldX + x][oldY + y].getPiece().isDraughts()
@@ -286,6 +455,13 @@ public class Game {
                         if (PieceType.WHITE == activePiece.getType()) {
                             System.out.println("hasToKillLight");
                             hasToKillLight = true;
+                            if (gameMode == 2) {
+                                //Falls Singleplayer
+                                System.out.println("autokill");
+                                nextPiece = activePiece;
+                                nextX = oldX + (x * 2);
+                                nextY = oldY + (y * 2);
+                            }
                         } else {
                             System.out.println("hasToKillDark");
                             hasToKillDark = true;
@@ -294,13 +470,20 @@ public class Game {
 
                 }
 
-                // error handling falls outside of board
+                //Handling falls outside of board
                 if (oldX - x >= 0 && oldX - x <= 7 && oldY - y >= 0 && oldY - y <= 7) {
                     if (!board[oldX - x][oldY - y].hasPiece()) {
 
                         if (PieceType.WHITE == activePiece.getType()) {
                             System.out.println("hasToKillDark");
                             hasToKillDark = true;
+                            //Falls Singleplayer
+                            if (gameMode == 2) {
+                                System.out.println("autokill");
+                                nextPiece = activePiece;
+                                nextX = oldX + (x * 2);
+                                nextY = oldY + (y * 2);
+                            }
                         } else {
                             System.out.println("hasToKillLight");
                             hasToKillLight = true;
@@ -308,236 +491,43 @@ public class Game {
                     }
                 }
 
-
             }
-
 
         }
     }
 
     /**
-     *
-     *
-     * @param piece
+     * Singleplayer Modus
      */
-    public void canKill(Piece piece) {
-
-
-        hasToKillLight = false;
-        hasToKillDark = false;
-
-        PieceType currentPlayer = gameInfo.getTurn();
-
-
-        System.out.println("Size: " + pieceGroup.getChildren().size());
-
-        for (int i = 0; i < pieceGroup.getChildren().size(); i++) {
-
-            //if (hasToKillLight && hasToKillDark) break;
-            // änderungen bevor mehrfach nacheinander kill
-            if (hasToKillLight || hasToKillDark) break;
-
-            Node node = pieceGroup.getChildren().get(i);
-            Piece activePiece = (Piece) node;
-
-            // änderungen bevor mehrfach nacheinander kill
-            if (activePiece.getType() != currentPlayer) {
-
-
-                if (activePiece.getType() == PieceType.BLACK || activePiece.isDraughts()) {
-                    checkKill(activePiece, 3);
-                    checkKill(activePiece, 4);
-                }
-
-                if (activePiece.getType() == PieceType.WHITE || activePiece.isDraughts()) {
-                    checkKill(activePiece, 1);
-                    checkKill(activePiece, 2);
-                }
-
-
-            }
-        }
-    }
-
-
-    private void performPiece(Piece piece, int newX, int newY) {
-        MoveResult result;
-
-        if (newX < 0 || newY < 0 || newX >= WIDTH || newY >= HEIGHT || (gameInfo.getTurn() != piece.getType())) {
-            result = new MoveResult(MoveType.NONE);
+    public void singlePlayer() {
+        //Autokill falls hasToKillLight
+        if (hasToKillLight) {
+            performMove(nextPiece, nextX, nextY);
         } else {
-            result = tryMove(piece, newX, newY);
-        }
-
-        int x0 = toBoard(piece.getOldX());
-        int y0 = toBoard(piece.getOldY());
-
-        switch (result.getType()) {
-            case NONE:
-                piece.abortMove();
-                break;
-            case NORMAL:
-                piece.move(newX, newY);
-                board[x0][y0].setPiece(null);
-                board[newX][newY].setPiece(piece);
-
-                // Dame Implementierung
-                if (!piece.isDraughts() && (newY == 7 && piece.getType() == PieceType.BLACK) || (newY == 0 && piece.getType() == PieceType.WHITE)) {
-                    piece.setDraughts(true);
+            for (int i = 0; i < WIDTH; i++) {
+                for (int q = 0; q < HEIGHT; q++) {
+                    if (board[i][q].hasPiece()) {
+                        if (board[i][q].getPiece().getType() == PieceType.WHITE) {
+                            Piece piece = board[i][q].getPiece();
+                            if ((toBoard(piece.getOldX()) - 1)>=0 && (toBoard(piece.getOldY()) - 1)>=0 && tryMove(piece, toBoard(piece.getOldX()) - 1, toBoard(piece.getOldY()) - 1).getType() == MoveType.NORMAL) {
+                                performMove(piece, toBoard(piece.getOldX()) - 1, toBoard(piece.getOldY()) - 1);
+                                break;
+                            } else if ((toBoard(piece.getOldX()) + 1)<HEIGHT && (toBoard(piece.getOldY()) - 1)>=0 && tryMove(piece, toBoard(piece.getOldX()) + 1, toBoard(piece.getOldY()) - 1).getType() == MoveType.NORMAL) {
+                                performMove(piece, toBoard(piece.getOldX()) + 1, toBoard(piece.getOldY()) - 1);
+                                break;
+                            } else if (piece.isDraughts()) {
+                                if ((toBoard(piece.getOldX()) + 1)<HEIGHT && (toBoard(piece.getOldY()) + 1)<WIDTH && tryMove(piece, toBoard(piece.getOldX()) + 1, toBoard(piece.getOldY()) + 1).getType() == MoveType.NORMAL) {
+                                    performMove(piece, toBoard(piece.getOldX()) + 1, toBoard(piece.getOldY()) + 1);
+                                    break;
+                                } else if ((toBoard(piece.getOldX()) - 1)>=0 && (toBoard(piece.getOldY()) + 1)<WIDTH && tryMove(piece, toBoard(piece.getOldX()) - 1, toBoard(piece.getOldY()) + 1).getType() == MoveType.NORMAL) {
+                                    performMove(piece, toBoard(piece.getOldX()) - 1, toBoard(piece.getOldY()) + 1);
+                                    break;
+                                }
+                            }
+                        }
+                    }
                 }
-
-                // check ob gegner killen können für nächsten turn
-                canKill(piece);
-
-                gameInfo.countUpRound();
-                gameInfo.changeTurn();
-                gameInfo.updateGameInfo();
-                System.out.println(gameInfo.getRound());
-
-                break;
-            case KILL:
-
-                piece.move(newX, newY);
-                board[x0][y0].setPiece(null);
-                board[newX][newY].setPiece(piece);
-
-                if (!piece.isDraughts() && (newY == 7 && piece.getType() == PieceType.BLACK) || (newY == 0 && piece.getType() == PieceType.WHITE)) {
-                    piece.setDraughts(true);
-                }
-
-                // alte implementation für mehrere kills
-                    /* for (Piece killPiece : result.getPiecesList()) {
-                        board[toBoard(killPiece.getOldX())][toBoard(killPiece.getOldY())].setPiece(null);
-                        pieceGroup.getChildren().remove(killPiece);
-                    }*/
-
-                Piece otherPiece = result.getPiece();
-                board[toBoard(otherPiece.getOldX())][toBoard(otherPiece.getOldY())].setPiece(null);
-                pieceGroup.getChildren().remove(otherPiece);
-
-
-                // check ob gegner killen können für nächsten turn
-                canKill(piece);
-
-                // check ob gleicher stein nochmals killen kann
-                if (piece.getType() == PieceType.BLACK || piece.isDraughts()) {
-                    checkKill(piece, 3);
-                    checkKill(piece, 4);
-                }
-                if (piece.getType() == PieceType.WHITE || piece.isDraughts()) {
-                    checkKill(piece, 1);
-                    checkKill(piece, 2);
-                }
-
-
-
-
-                //Verlorene Spielsteine hochzaehlen
-                if (piece.getType() == PieceType.WHITE) {
-                    gameInfo.countUpLostDark();
-                } else if (piece.getType() == PieceType.BLACK) {
-                    gameInfo.countUpLostLight();
-                }
-                //Zug wechseln und Runde hochzaehlen
-                if ( (gameInfo.getTurn() == PieceType.WHITE && !hasToKillLight) || (gameInfo.getTurn() == PieceType.BLACK && !hasToKillDark) ){
-                    gameInfo.countUpRound();
-                    gameInfo.changeTurn();
-                }
-                gameInfo.updateGameInfo();
-                System.out.println(gameInfo.getRound());
-
-                break;
-        }
-    }
-
-    /**
-     * @param type
-     * @param x
-     * @param y
-     * @return
-     */
-    private Piece makePiece(PieceType type, int x, int y) {
-        Piece piece = new Piece(type, x, y);
-
-        //Logik nach dem loslassen
-        piece.setOnMouseReleased(e -> {
-
-            int newX = toBoard(piece.getLayoutX());
-            int newY = toBoard(piece.getLayoutY());
-
-            performPiece(piece, newX, newY);
-
-            /*MoveResult result;
-
-            if (newX < 0 || newY < 0 || newX >= WIDTH || newY >= HEIGHT || (gameInfo.getTurn() != piece.getType())) {
-                result = new MoveResult(MoveType.NONE);
-            } else {
-                result = tryMove(piece, newX, newY);
             }
-
-            int x0 = toBoard(piece.getOldX());
-            int y0 = toBoard(piece.getOldY());
-
-            switch (result.getType()) {
-                case NONE:
-                    piece.abortMove();
-                    break;
-                case NORMAL:
-                    piece.move(newX, newY);
-                    board[x0][y0].setPiece(null);
-                    board[newX][newY].setPiece(piece);
-
-                    // Dame Implementierung
-                    if (!piece.isDraughts() && (newY == 7 && piece.getType() == PieceType.BLACK) || (newY == 0 && piece.getType() == PieceType.WHITE)) {
-                        piece.setDraughts(true);
-                    }
-
-                    canKill(piece);
-
-                    gameInfo.countUpRound();
-                    gameInfo.changeTurn();
-                    gameInfo.updateGameInfo();
-                    System.out.println(gameInfo.getRound());
-
-                    break;
-                case KILL:
-                    piece.move(newX, newY);
-                    board[x0][y0].setPiece(null);
-                    board[newX][newY].setPiece(piece);
-
-                    if (!piece.isDraughts() && (newY == 7 && piece.getType() == PieceType.BLACK) || (newY == 0 && piece.getType() == PieceType.WHITE)) {
-                        piece.setDraughts(true);
-                    }
-
-                    // alte implementation für mehrere kills
-                    *//* for (Piece killPiece : result.getPiecesList()) {
-                        board[toBoard(killPiece.getOldX())][toBoard(killPiece.getOldY())].setPiece(null);
-                        pieceGroup.getChildren().remove(killPiece);
-                    }*//*
-
-                    Piece otherPiece = result.getPiece();
-                    board[toBoard(otherPiece.getOldX())][toBoard(otherPiece.getOldY())].setPiece(null);
-                    pieceGroup.getChildren().remove(otherPiece);
-
-                    canKill(piece);
-
-                    //Verlorene Spielsteine hochzaehlen
-                    if (piece.getType() == PieceType.WHITE) {
-                        gameInfo.countUpLostDark();
-                    } else if (piece.getType() == PieceType.BLACK) {
-                        gameInfo.countUpLostLight();
-                    }
-
-                    gameInfo.countUpRound();
-                    gameInfo.changeTurn();
-                    gameInfo.updateGameInfo();
-                    System.out.println(gameInfo.getRound());
-
-                    break;
-            }*/
-        });
-
-        return piece;
+        }
     }
-
 }
