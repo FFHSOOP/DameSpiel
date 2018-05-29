@@ -42,7 +42,6 @@ public class GameTest {
     @Test
     public void testBoardSize() {
 	int xa = Game.WIDTH;
-//	int xa = 5;
 	int ya = Game.HEIGHT;
 	int xb = board[0].length;
 	int yb = board.length;
@@ -54,15 +53,21 @@ public class GameTest {
     @Test
     public void testFieldInitialisation() {
 	int failure = 0;
+	int failureColor = 0;
+	
 	for (int y = 0; y < Game.HEIGHT; y++) {
 	    for (int x = 0; x < Game.WIDTH; x++) {
 		if ( !board[x][y].getClass().equals(Tile.class)) {
 	
 		  failure++; 
 		}
+		if ((x + y) % 2 != 0 && board[x][y].getTileType() != TileType.WHITE  ) {
+		     failureColor++;
+		}
 	    }   
 	}
 	assertEquals( 0 , failure , "Felder nicht korrekt initialisiert!" );
+	assertEquals( 0 , failure , "Felder haben falsche Farbe!");
 	
     }
 

@@ -14,6 +14,7 @@ import javafx.scene.shape.Rectangle;
 public class Tile extends Rectangle {
 
     private Piece piece; //Spielstein
+    private TileType tileType;
 
     /**
      * 
@@ -28,7 +29,12 @@ public class Tile extends Rectangle {
         relocate(x * Game.TILE_SIZE, y * Game.TILE_SIZE);
 
         setFill(light ? Color.valueOf("#fff9e9") : Color.valueOf("#986430"));
+        
+        if(light) {
+            tileType = TileType.WHITE;
+        }else {tileType = TileType.BLACK;}
     }
+    
 
     /**
      * Gibt den Spielstein des Feldes zurueck
@@ -52,5 +58,13 @@ public class Tile extends Rectangle {
      */
     public boolean hasPiece() {
         return piece != null;
+    }
+    
+    /**
+     * Gibt die Farbe eines Feldes zurueck
+     * @return 
+     */
+    public TileType getTileType() {
+	return tileType;
     }
 }
