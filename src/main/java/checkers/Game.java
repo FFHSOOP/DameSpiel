@@ -35,6 +35,11 @@ public class Game {
     private boolean hasToKillLight;
     private boolean hasToKillDark;
     
+    //Singleplayer
+    private Piece nextPiece;
+    private int nextX;
+    private int nextY;
+    
     public Game() {
 	tileGroup = new Group();
 	pieceGroup = new Group();
@@ -71,16 +76,13 @@ public class Game {
 	return gameMode;
     }
     
-    public void setGameMode(int mode) {
+    protected void setGameMode(int mode) {
 	gameMode = mode;
     }
     
     
 
-    //Singleplayer
-    private Piece nextPiece;
-    private int nextX;
-    private int nextY;
+  
 
     /**
      * Hauptmenu
@@ -151,7 +153,7 @@ public class Game {
      *
      * @return
      */
-    public Parent createContent() {
+    protected Parent createContent() {
         Pane root = new Pane();
         root.setPrefSize(WIDTH * TILE_SIZE, HEIGHT * TILE_SIZE + 200); //Groesse des Spielfeldes inkl. Infobereich
         root.getChildren().addAll(tileGroup, pieceGroup, gameInfo.getGameInfo());
@@ -374,7 +376,7 @@ public class Game {
      *
      * @param piece
      */
-    public void canKill(Piece piece) {
+    private void canKill(Piece piece) {
 
         hasToKillLight = false;
         hasToKillDark = false;
@@ -417,7 +419,7 @@ public class Game {
      * @param activePiece
      * @param direction
      */
-    public void checkKill(Piece activePiece, int direction) {
+    private void checkKill(Piece activePiece, int direction) {
 
         int oldX = toBoard(activePiece.getOldX());
         int oldY = toBoard(activePiece.getOldY());
