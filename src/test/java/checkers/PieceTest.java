@@ -10,9 +10,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * @author 
- *
- */
+* @author Marco Wyssmann
+* @author Benjamin Steffen
+* @author Stefan Nyffenegger
+* @version 1.0
+*/
+ 
 public class PieceTest {
 
     
@@ -23,11 +26,8 @@ public class PieceTest {
     private int newYPos;
     private Piece piece;
     
-  
-    
-
     /**
-     * @throws java.lang.Exception
+     * 
      */
     @Before
     public void initTestFixtures(){
@@ -40,6 +40,8 @@ public class PieceTest {
     }
 
     /**
+     * Test ob bei Zugabbruch die Position stimmt
+     * 
      * Test method for {@link checkers.Piece#abortMove()}.
      */
     @Test
@@ -51,7 +53,8 @@ public class PieceTest {
         	    piece.getLayoutX() && piece.getOldY() == piece.getLayoutY());
     }
 
-    /**
+    /**Test ob die Spielsteine richtig verschoben werden
+     * 
      * Test method for {@link checkers.Piece#move(int, int)}.
      */
     @Test
