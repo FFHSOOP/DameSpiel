@@ -35,6 +35,11 @@ public class Game {
     private boolean hasToKillLight;
     private boolean hasToKillDark;
     
+    //Singleplayer
+    private Piece nextPiece;
+    private int nextX;
+    private int nextY;
+    
     public Game() {
 	tileGroup = new Group();
 	pieceGroup = new Group();
@@ -77,10 +82,7 @@ public class Game {
     
     
 
-    //Singleplayer
-    private Piece nextPiece;
-    private int nextX;
-    private int nextY;
+  
 
     /**
      * Hauptmenu
