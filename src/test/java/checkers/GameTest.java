@@ -198,10 +198,15 @@ public class GameTest {
 	assertEquals( true , board[1][4].hasPiece() , "Position 1 / 4 hat keinen Spielstein!!" );
 	assertEquals( false , board[2][3].hasPiece() , "Position 2 / 3 hat bereits einen Spielstein!" );
 	
+	//bewegt den weissen Spielstein von x = 1, y = 4 auf x = 2, y = 3 
 	game.performMove(board[1][4].getPiece(), 2, 3);
 	
 	assertEquals( true , board[2][3].hasPiece() , "Position 2 / 3 hat noch keinen Spielstein!!" );
 	assertEquals( false , board[1][4].hasPiece() , "Position 1 / 4 hat immer noch einen Spielstein!" );
+	
+	// Prüfen ob sich die Spielstein Grafik entsprechend mitbewegt hat
+	assertEquals( board[2][3].getPiece().getLayoutX() , board[2][3].getLayoutX() , "Spielsteingrafik hat sich nicht richtig bewegt!" );
+	assertEquals( board[2][3].getPiece().getLayoutY() , board[2][3].getLayoutY() , "Spielsteingrafik hat sich nicht richtig bewegt!" );
 	
     }
     /**
@@ -256,36 +261,139 @@ public class GameTest {
     
     @Test
     public void testIgnoreCanKill() {
+	//Initialisierung
+	setupForTest();
+	game.performMove(board[1][4].getPiece(), 2, 3); //weisser Zug
 	
+	//schwarz ist am Zug und könnte killen tut dies aber nicht
+	
+	game.performMove(board[7][2].getPiece(), 6, 3);
+	
+	assertEquals( true , board[7][2].hasPiece() , "Position 7 / 2 hat keinen Spielstein!" );
+	assertEquals( false , board[6][3].hasPiece() , "Stein konnte trotz kill normal bewegt werden!" );
     }
+    
+    
     /**
      * Testet ob ein Stein einen Kill ausführen kann und der gekillte Stein entfernt wird
      */
     @Test
     public void testPerformKillMove() {
+	//Initialisierung
 	setupForTest();
 	game.performMove(board[1][4].getPiece(), 2, 3);
 	
 	//schwarz kann killen
 	
-	game.performMove(board[3][2].getPiece(), 1, 4);
+	game.performMove(board[3][2].getPiece(), 1, 4); //kill
 	
 	assertEquals( true , board[1][4].hasPiece() , "Stein konnte zum Killen nicht bewegt werden!" );
-	assertEquals( false , board[2][3].hasPiece() , "Weisser Stein wurde nicht gekillt!" );
+	assertEquals( false , board[2][3].hasPiece() , "Weisser Stein wurde nicht vom Feld entfernt!" );
 	assertEquals( 23 , game.getPieceGroup().getChildren().size() , "Weisser Stein wurde nicht aus der Gruppe entfernt!" );
 	
     }
     
-    
-    @Test
-    public void testCheckKill() {
-	
-	assertTrue(true);
-    }
+    /**
+     * Test ob mehrere Steine gekillt werden können
+     */
+   @Test
+   public void testMultiKill() {
+     //Initialisierung
+     	setupForTest();
+     	game.performMove(board[1][4].getPiece(), 2, 3);
+     	game.performMove(board[3][2].getPiece(), 1, 4); //kill von schwarz
+     /**
+      *	Aktuelle Lage weiss ist am Zug
+      *
+      *			[ ][ ][ ][b][ ][b][ ][b]
+      * 		[b][ ][b][ ][ ][ ][b][ ]
+      * 		[ ][b][ ][ ][ ][b][ ][b]
+      * 		[b][ ][ ][ ][b][ ][ ][ ]
+      * 		[ ][b][ ][ ][ ][w][ ][ ]
+      * 		[ ][ ][w][ ][w][ ][w][ ]
+      * 		[ ][w][ ][w][ ][w][ ][w]
+      * 		[w][ ][ ][ ][w][ ][w][ ]
+      *
+      */
+       
+     	game.performMove(board[5][4].getPiece(), 3, 2); //Kill von weiss
+     	assertEquals( true , board[3][2].hasPiece() , "Stein konnte zum Killen nicht bewegt werden!" );
+     	assertEquals( false , board[4][3].hasPiece() , "Schwarzer Stein wurde nicht vom Feld entfernt!" );
+     	assertEquals( 22 , game.getPieceGroup().getChildren().size() , "Schwarzer Stein wurde nicht aus der Gruppe entfernt!" );
+     	
+     	
+     	//Test ob vor dem zweiten Kill ein schwarzer Stein ziehen kann
+     	game.performMove(board[2][1].getPiece(), 4, 3); 
+     	assertEquals( true , board[2][1].hasPiece() , "Stein konnte illegal waehrend Mehrfachkill bewegt werden!" );
+     	
+     	//Test zweiter Kill von weiss
+     	game.performMove(board[3][2].getPiece(), 1, 0);
+     	assertEquals( true , board[1][0].hasPiece() , "Stein konnte zum Killen nicht bewegt werden!" );
+     	assertEquals( false , board[2][1].hasPiece() , "Schwarzer Stein wurde nicht vom Feld entfernt!" );
+     	assertEquals( 21 , game.getPieceGroup().getChildren().size() , "Schwarzer Stein wurde nicht aus der Gruppe entfernt!" );
+     		
+   }
+   /**
+    * Test ob Steine in eine weisse Dame umgewandelt werden koennen und ob sich diese rueckwaerts bewegen
+    */
+   @Test
+   public void testDameWeiss() {
+     //Initialisierung
+    	setupForTest();
+    	game.performMove(board[1][4].getPiece(), 2, 3);
+    	game.performMove(board[3][2].getPiece(), 1, 4); //Kill von schwarz
+    	game.performMove(board[5][4].getPiece(), 3, 2); //Kill von weiss
+    	
+    	assertEquals( false , board[3][2].getPiece().isDraughts() , "Stein ist bereits eine Dame!" );
+    	
+    	game.performMove(board[3][2].getPiece(), 1, 0); //Kill von weiss
+    	
+    	assertEquals( true , board[1][0].getPiece().isDraughts() , "Stein sollte eine Dame sein!" );
+    	
+    	game.performMove(board[5][2].getPiece(), 6, 3);
+    	game.performMove(board[1][0].getPiece(), 2, 1);
+    	
+    	assertEquals( true , board[2][1].hasPiece() , "Dame konnte nicht rückwärts bewegt werden!" );
+    	
+   }
+   /**
+    * Test ob Steine in eine schwarze Dame umgewandelt werden koennen und ob sich diese rueckwaerts bewegen
+    */
+   @Test
+   public void testDameSchwarz() {
+     //Initialisierung
+    	setupForTest();
+    	game.performMove(board[1][4].getPiece(), 2, 3);
+    	game.performMove(board[3][2].getPiece(), 1, 4); //Kill von schwarz
+    	game.performMove(board[5][4].getPiece(), 3, 2); //Kill von weiss
+    	game.performMove(board[3][2].getPiece(), 1, 0); //Kill von weiss
+    	
 
-    @Test
-    public void testCanKill() {
-	assertTrue(true);
-    }
+	game.performMove(board[7][2].getPiece(), 6, 3); //schwarz
+    	game.performMove(board[6][5].getPiece(), 7, 4); //weiss
+    	game.performMove(board[3][0].getPiece(), 4, 1); //schwarz
+    	game.performMove(board[4][5].getPiece(), 3, 4); //weiss
+    	game.performMove(board[6][3].getPiece(), 5, 4); //schwarz
+    	game.performMove(board[3][6].getPiece(), 4, 5); //weiss
+    	game.performMove(board[5][4].getPiece(), 3, 6); //schwarz kill
+    	game.performMove(board[7][6].getPiece(), 6, 5); //weiss
+    	
+    	
+    	assertEquals( false , board[3][6].getPiece().isDraughts() , "Stein ist bereits eine Dame!" );
+    	
+    	game.performMove(board[3][6].getPiece(), 2, 7); //schwarz bekommt Dame
+    	
+    	assertEquals( true , board[2][7].getPiece().isDraughts() , "Stein sollte eine Dame sein!" );
+    	
+    	
+    	
+    	game.performMove(board[6][5].getPiece(), 5, 4); //weiss
+    	
+    	
+    	//Test ob Dame auch rückwärts ziehen kann
+    	
+    	game.performMove(board[2][7].getPiece(), 0, 5); //schwarz
+    	assertEquals( true , board[0][5].hasPiece() , "Dame konnte nicht rückwärts bewegt werden!" );
+   }
 
 }
