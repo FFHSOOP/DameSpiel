@@ -6,7 +6,7 @@ import javafx.stage.Stage;
 
 
 /**
- * Mainklasse
+ * Initialisiert Mainklasse und startet das JavaFX Spiel
  *
  * @author Marco Wyssmann
  * @author Benjamin Steffen

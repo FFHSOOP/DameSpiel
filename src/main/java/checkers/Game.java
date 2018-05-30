@@ -35,6 +35,11 @@ public class Game {
     private boolean hasToKillLight;
     private boolean hasToKillDark;
     
+    //Singleplayer
+    private Piece nextPiece;
+    private int nextX;
+    private int nextY;
+    
     public Game() {
 	tileGroup = new Group();
 	pieceGroup = new Group();
@@ -71,16 +76,13 @@ public class Game {
 	return gameMode;
     }
     
-    public void setGameMode(int mode) {
+    protected void setGameMode(int mode) {
 	gameMode = mode;
     }
     
     
 
-    //Singleplayer
-    private Piece nextPiece;
-    private int nextX;
-    private int nextY;
+  
 
     /**
      * Hauptmenu
@@ -151,7 +153,7 @@ public class Game {
      *
      * @return
      */
-    public Parent createContent() {
+    protected Parent createContent() {
         Pane root = new Pane();
         root.setPrefSize(WIDTH * TILE_SIZE, HEIGHT * TILE_SIZE + 200); //Groesse des Spielfeldes inkl. Infobereich
         root.getChildren().addAll(tileGroup, pieceGroup, gameInfo.getGameInfo());
@@ -275,11 +277,6 @@ public class Game {
                     piece.setDraughts(true);
                 }
 
-                // alte implementation für mehrere kills
-                /* for (Piece killPiece : result.getPiecesList()) {
-                        board[toBoard(killPiece.getOldX())][toBoard(killPiece.getOldY())].setPiece(null);
-                        pieceGroup.getChildren().remove(killPiece);
-                    }*/
                 Piece otherPiece = result.getPiece();
                 board[toBoard(otherPiece.getOldX())][toBoard(otherPiece.getOldY())].setPiece(null);
                 pieceGroup.getChildren().remove(otherPiece);
@@ -336,8 +333,7 @@ public class Game {
             return new MoveResult(MoveType.NONE);
         }
 
-        // alte implementation für mehrere kills
-        // ArrayList<Piece> piecesList = new ArrayList<>();
+
         // Wenn nur 1 Schritt und (Richtung stimmt oder Dame ist)
         if (Math.abs(newX - x0) == 1 && (newY - y0 == piece.getType().moveDir || piece.isDraughts())) {
 
@@ -374,7 +370,7 @@ public class Game {
      *
      * @param piece
      */
-    public void canKill(Piece piece) {
+    private void canKill(Piece piece) {
 
         hasToKillLight = false;
         hasToKillDark = false;
@@ -385,7 +381,7 @@ public class Game {
 
         for (int i = 0; i < pieceGroup.getChildren().size(); i++) {
 
-            //if (hasToKillLight && hasToKillDark) break;
+
             // änderungen bevor mehrfach nacheinander kill
             if (hasToKillLight || hasToKillDark) {
                 break;
@@ -417,7 +413,7 @@ public class Game {
      * @param activePiece
      * @param direction
      */
-    public void checkKill(Piece activePiece, int direction) {
+    private void checkKill(Piece activePiece, int direction) {
 
         int oldX = toBoard(activePiece.getOldX());
         int oldY = toBoard(activePiece.getOldY());
@@ -450,12 +446,7 @@ public class Game {
 
         // Zu überprüfendes kill feld auf gültigkeit auf spielfeld prüfen
         if (oldX + x >= 0 && oldX + x <= 7 && oldY + y >= 0 && oldY + y <= 7) {
-            //System.out.println("oldX: " + oldX + " oldY: " + oldY);
-            //System.out.println("check position x: " + (oldX + x) + " y: " + (oldY + y));
-            //System.out.println("hasPiece: " + board[oldX + x][oldY + y].hasPiece());
 
-            // falls zu prüfendes feld durch feind besetzt ist, funktion mit haskill nochmals aufrufen und nächstes feld prüfen
-            // (oldY - (oldY + y) != activePiece.getType().moveDir || board[oldX + x][oldY + y].getPiece().isDraughts()
             if (board[oldX + x][oldY + y].hasPiece() && (board[oldX + x][oldY + y].getPiece().getType() != activePiece.getType())) {
                 System.out.println("check if hasToKill");
 
