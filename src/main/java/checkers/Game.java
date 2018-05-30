@@ -277,11 +277,6 @@ public class Game {
                     piece.setDraughts(true);
                 }
 
-                // alte implementation für mehrere kills
-                /* for (Piece killPiece : result.getPiecesList()) {
-                        board[toBoard(killPiece.getOldX())][toBoard(killPiece.getOldY())].setPiece(null);
-                        pieceGroup.getChildren().remove(killPiece);
-                    }*/
                 Piece otherPiece = result.getPiece();
                 board[toBoard(otherPiece.getOldX())][toBoard(otherPiece.getOldY())].setPiece(null);
                 pieceGroup.getChildren().remove(otherPiece);
@@ -338,8 +333,7 @@ public class Game {
             return new MoveResult(MoveType.NONE);
         }
 
-        // alte implementation für mehrere kills
-        // ArrayList<Piece> piecesList = new ArrayList<>();
+
         // Wenn nur 1 Schritt und (Richtung stimmt oder Dame ist)
         if (Math.abs(newX - x0) == 1 && (newY - y0 == piece.getType().moveDir || piece.isDraughts())) {
 
@@ -387,7 +381,7 @@ public class Game {
 
         for (int i = 0; i < pieceGroup.getChildren().size(); i++) {
 
-            //if (hasToKillLight && hasToKillDark) break;
+
             // änderungen bevor mehrfach nacheinander kill
             if (hasToKillLight || hasToKillDark) {
                 break;
@@ -452,12 +446,7 @@ public class Game {
 
         // Zu überprüfendes kill feld auf gültigkeit auf spielfeld prüfen
         if (oldX + x >= 0 && oldX + x <= 7 && oldY + y >= 0 && oldY + y <= 7) {
-            //System.out.println("oldX: " + oldX + " oldY: " + oldY);
-            //System.out.println("check position x: " + (oldX + x) + " y: " + (oldY + y));
-            //System.out.println("hasPiece: " + board[oldX + x][oldY + y].hasPiece());
 
-            // falls zu prüfendes feld durch feind besetzt ist, funktion mit haskill nochmals aufrufen und nächstes feld prüfen
-            // (oldY - (oldY + y) != activePiece.getType().moveDir || board[oldX + x][oldY + y].getPiece().isDraughts()
             if (board[oldX + x][oldY + y].hasPiece() && (board[oldX + x][oldY + y].getPiece().getType() != activePiece.getType())) {
                 System.out.println("check if hasToKill");
 
