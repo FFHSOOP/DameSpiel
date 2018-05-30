@@ -1,7 +1,5 @@
 package checkers;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Parent;
@@ -10,6 +8,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 /**
  * Spielinformationen
@@ -99,7 +100,7 @@ public class GameInfo {
     public int getRound() {
         return round;
     }
-    
+
     /**
      * Gibt den Winscreen fuer Hell aus
      *
@@ -114,7 +115,7 @@ public class GameInfo {
         imageView.setFitHeight(460);
         imageView.setFitWidth(460);
         imageView.setPreserveRatio(true);
-        
+
         return new Group(imageView);
     }
 
@@ -132,7 +133,7 @@ public class GameInfo {
         imageView.setFitHeight(460);
         imageView.setFitWidth(460);
         imageView.setPreserveRatio(true);
-        
+
         return new Group(imageView);
     }
 

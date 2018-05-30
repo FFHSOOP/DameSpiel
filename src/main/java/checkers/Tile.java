@@ -21,8 +21,8 @@ public class Tile extends Rectangle {
      * Setzt die Farbe, Dimension und Platzierun mit JavaFX Funktionen
      *
      * @param light Definiert Farbe des Steins BLACK oder WHITE per Enum Type TileType
-     * @param x x-Position des Feldes
-     * @param y y-Position des Feldes
+     * @param x     x-Position des Feldes
+     * @param y     y-Position des Feldes
      */
     public Tile(boolean light, int x, int y) {
         setWidth(Game.TILE_SIZE);
@@ -31,17 +31,18 @@ public class Tile extends Rectangle {
         relocate(x * Game.TILE_SIZE, y * Game.TILE_SIZE);
 
         setFill(light ? Color.valueOf("#fff9e9") : Color.valueOf("#986430"));
-        
+
         if (light) {
             tileType = TileType.WHITE;
         } else {
             tileType = TileType.BLACK;
         }
     }
-    
+
 
     /**
      * Gibt den Spielstein des Feldes zurueck
+     *
      * @return Piece
      */
     public Piece getPiece() {
@@ -50,6 +51,7 @@ public class Tile extends Rectangle {
 
     /**
      * Setzt den Spielstein auf dem Feld
+     *
      * @param piece Piece
      */
     public void setPiece(Piece piece) {
@@ -58,17 +60,19 @@ public class Tile extends Rectangle {
 
     /**
      * Gibt zurueck ob das Feld einen Spielstein beinhaltet
-     * @return 
+     *
+     * @return
      */
     public boolean hasPiece() {
         return piece != null;
     }
-    
+
     /**
      * Gibt die Farbe eines Feldes zurueck
-     * @return 
+     *
+     * @return
      */
     public TileType getTileType() {
-	return tileType;
+        return tileType;
     }
 }
