@@ -258,7 +258,7 @@ public class Game {
                 System.out.println(gameInfo.getRound());
                 System.out.println("NORMAL");
 
-                if (gameMode == 2 && gameInfo.getTurn() == PieceType.BLACK) {
+                if (gameMode == 2 && gameInfo.getTurn() == PieceType.WHITE) {
                     singlePlayer();
                 }
                 break;
@@ -304,7 +304,7 @@ public class Game {
                 System.out.println(gameInfo.getRound());
                 System.out.println("KILL");
 
-                if (gameMode == 2 && gameInfo.getTurn() == PieceType.BLACK) {
+                if (gameMode == 2 && gameInfo.getTurn() == PieceType.WHITE) {
                     singlePlayer();
                 }
                 break;
