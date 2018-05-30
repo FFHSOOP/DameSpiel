@@ -27,13 +27,13 @@ public class Piece extends StackPane {
     /**
      * Konstruktor eines Spielsteins
      * Setzt die Farbe, Dimension und Platzierung mit JavaFX Funktionen
-     *
+     * <p>
      * setOnMousePressed: Speilstein bewegt sich mit bei gedrückter Mausbewegung
      * setOnMouseDragged: Beim loslassen der Maus wird der Spielstein verlagert
      *
      * @param type PieceType des Spielsteins
-     * @param x x-Position des Feldes
-     * @param y y-Position des Feldes
+     * @param x    x-Position des Feldes
+     * @param y    y-Position des Feldes
      */
 
     public Piece(PieceType type, int x, int y) {
@@ -61,8 +61,8 @@ public class Piece extends StackPane {
         ellipse.setTranslateY((TILE_SIZE - TILE_SIZE * 0.26 * 2) / 2);
 
         getChildren().addAll(bg, ellipse);
-        
-        
+
+
         setOnMousePressed(e -> {
             mouseX = e.getSceneX();
             mouseY = e.getSceneY();
@@ -72,10 +72,10 @@ public class Piece extends StackPane {
             relocate(e.getSceneX() - mouseX + oldX, e.getSceneY() - mouseY + oldY);
         });
     }
-    
+
     /**
      * Gibt Zustand über Dame zurück
-     * 
+     *
      * @return Zustand ob Spielstein Dame ist
      */
     public boolean isDraughts() {
@@ -84,30 +84,30 @@ public class Piece extends StackPane {
 
     /**
      * Setzt den Wert der Dame und verleiht dem Spielsteine eine Krone
-     * 
+     *
      * @param draughts Setzt den Wert der Dame
      */
     public void setDraughts(boolean draughts) {
         this.draughts = draughts;
 
         SVGPath svgPath = new SVGPath();
-        String path ="M" + TILE_SIZE * 0.32 + "," + TILE_SIZE * 0.06 + " " 
-        		 + TILE_SIZE * 0.23 + "," + TILE_SIZE * 0.15 + " "
-        		 + TILE_SIZE * 0.16 + "," + TILE_SIZE * 0.06 + " "
-        		 + TILE_SIZE * 0.09 + "," + TILE_SIZE * 0.15 + " "
-        		 + TILE_SIZE * 0.00 + "," + TILE_SIZE * 0.06 + " "
-        		 + TILE_SIZE * 0.02 + "," + TILE_SIZE * 0.26 + " "
-        		 + TILE_SIZE * 0.30 + "," + TILE_SIZE * 0.26 + "Z";
-     
+        String path = "M" + TILE_SIZE * 0.32 + "," + TILE_SIZE * 0.06 + " "
+                + TILE_SIZE * 0.23 + "," + TILE_SIZE * 0.15 + " "
+                + TILE_SIZE * 0.16 + "," + TILE_SIZE * 0.06 + " "
+                + TILE_SIZE * 0.09 + "," + TILE_SIZE * 0.15 + " "
+                + TILE_SIZE * 0.00 + "," + TILE_SIZE * 0.06 + " "
+                + TILE_SIZE * 0.02 + "," + TILE_SIZE * 0.26 + " "
+                + TILE_SIZE * 0.30 + "," + TILE_SIZE * 0.26 + "Z";
+
         svgPath.setContent(path);
-        svgPath.setTranslateX((TILE_SIZE - TILE_SIZE * 0.32 * 2 ) / 2 );
-        svgPath.setTranslateY((TILE_SIZE - TILE_SIZE * 0.26 * 2 ) / 2 );
+        svgPath.setTranslateX((TILE_SIZE - TILE_SIZE * 0.32 * 2) / 2);
+        svgPath.setTranslateY((TILE_SIZE - TILE_SIZE * 0.26 * 2) / 2);
         svgPath.setFill(Color.valueOf("#ffff00"));
         svgPath.setStroke(Color.BLACK);
         svgPath.setStrokeWidth(TILE_SIZE * 0.03);
-        
+
         getChildren().add(svgPath);
-        
+
     }
 
     /**

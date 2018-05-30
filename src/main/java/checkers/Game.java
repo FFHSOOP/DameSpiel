@@ -21,25 +21,24 @@ import java.util.logging.Logger;
 
 /**
  * Hauptlogik des Spiels
- *
+ * <p>
  * TILE_SIZE: Grösse eines einzelnen Feldes
  * WIDTH: Anzahl Felder Breite
  * HEIGHT: Anzahl Felder Höhe
- *
+ * <p>
  * board: Spielbrett
- *
+ * <p>
  * tileGroup: Group die alle Felder fasst
  * pieceGroup: Group die alle Spielsteine fasst
  * gameInfo: Fasst alle Spielinformationen
  * gameMode: Definiert Single oder Multiplayer
- *
+ * <p>
  * hasToKillLight: Definiert ob weiss fressen muss
  * hasToKillDark: Definiert ob schwarz fressen muss
- *
+ * <p>
  * nextPiece: Spielstein das von der KI gefressen werden muss
  * nextX: x-Position wohin KI Spielstein bewegen muss
  * nextY: y-Position wohin KI Spielstein bewegen muss
- *
  *
  * @author Marco Wyssmann
  * @author Benjamin Steffen
@@ -82,7 +81,7 @@ public class Game {
      * @return Gibt Spielbrett zurück
      */
     public Tile[][] getBoard() {
-	return board;
+        return board;
     }
 
     /**
@@ -91,7 +90,7 @@ public class Game {
      * @return Gibt Feldgruppe zurück
      */
     public Group getTileGroup() {
-	return tileGroup;
+        return tileGroup;
     }
 
     /**
@@ -100,7 +99,7 @@ public class Game {
      * @return Gibt Spielsteingruppe zurück
      */
     public Group getPieceGroup() {
-	return pieceGroup;
+        return pieceGroup;
     }
 
     /**
@@ -109,7 +108,7 @@ public class Game {
      * @return Gibt GameInfo zurück
      */
     public GameInfo getGameInfo() {
-	return gameInfo;
+        return gameInfo;
     }
 
     /**
@@ -118,7 +117,7 @@ public class Game {
      * @return Gibt hasToKillLight zurück
      */
     public boolean getHasToKillLight() {
-	return hasToKillLight;
+        return hasToKillLight;
     }
 
     /**
@@ -127,7 +126,7 @@ public class Game {
      * @return Gibt HasToKillDark zurück
      */
     public boolean getHasToKillDark() {
-	return hasToKillDark;
+        return hasToKillDark;
     }
 
     /**
@@ -136,15 +135,14 @@ public class Game {
      * @return Gibt gameMode zurück
      */
     public int getGameMode() {
-	return gameMode;
+        return gameMode;
     }
 
     /**
      * Setzt gameMode auf Single oder Multiplayer
-     *
      */
     protected void setGameMode(int mode) {
-	gameMode = mode;
+        gameMode = mode;
     }
 
     /**
@@ -259,8 +257,8 @@ public class Game {
      * setOnMouseReleased: Definiert den Aufruf beim loslassen des Spielsteins
      *
      * @param type PieceType des Spielsteins
-     * @param x x-Position des Feldes
-     * @param y y-Position des Feldes
+     * @param x    x-Position des Feldes
+     * @param y    y-Position des Feldes
      * @return Liefert den Spielstein zurück
      */
     private Piece makePiece(PieceType type, int x, int y) {
@@ -287,8 +285,8 @@ public class Game {
      * MOVE und KILL aktualisieren die Game Informationen
      *
      * @param piece Übergabe des Spielsteins
-     * @param newX neue x-Position
-     * @param newY neue y-Position
+     * @param newX  neue x-Position
+     * @param newY  neue y-Position
      */
     public void performMove(Piece piece, int newX, int newY) {
         MoveResult result;
@@ -389,8 +387,8 @@ public class Game {
      * Prüft ob eine gültige Bewegung ausgeführt wurde und gibt entsprechend MoveType zurück
      *
      * @param piece Spielstein
-     * @param newX neue X Position
-     * @param newY neue Y Position
+     * @param newX  neue X Position
+     * @param newY  neue Y Position
      * @return MoveType (NONE, NORMAL, KILL)
      */
     private MoveResult tryMove(Piece piece, int newX, int newY) {
@@ -435,7 +433,6 @@ public class Game {
     /**
      * Lässt alle Spielsteine des Gegner prüfen ob gefressen werden kann
      * Dafür wird ein Spielstein genommen und der checkKill Methode übergeben
-     *
      */
     private void canKill() {
 
@@ -477,7 +474,7 @@ public class Game {
      * Lässt ein Spielsteine des Gegners in eine Richtung prüfen ob gefressen werden kann und setzt entsprechend globale Variabel
      *
      * @param activePiece Zu prüfender Spielstein
-     * @param direction Zu prüfende Richtung
+     * @param direction   Zu prüfende Richtung
      */
     private void checkKill(Piece activePiece, int direction) {
 
@@ -569,7 +566,7 @@ public class Game {
 
     /**
      * Singleplayer Modus
-     *
+     * <p>
      * Singleplayer Modus. Die Strategie des Computergegners ist, moeglichst
      * schnell eine Dame zu erhalten. Die restlichen Spielsteine verbleiben in
      * einer defensiven Stellung
