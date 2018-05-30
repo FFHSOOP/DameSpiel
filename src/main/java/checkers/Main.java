@@ -18,7 +18,7 @@ public class Main extends Application {
     /**
      * Main
      *
-     * @param args
+     * @param args Parameter fuer die Mainklasse
      */
     public static void main(String[] args) {
         launch(args);
@@ -27,8 +27,8 @@ public class Main extends Application {
     /**
      * Start Methode von JavaFX, wird durch launch() aufgerufen
      *
-     * @param primaryStage
-     * @throws Exception
+     * @param primaryStage FX Hauptgrafikobjekt
+     * @throws Exception Exceptions von start
      */
     @Override
     public void start(Stage primaryStage) throws Exception {

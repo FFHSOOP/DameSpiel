@@ -16,6 +16,8 @@ public class MoveResult {
     /**
      * Konstruktor mit einem Argument
      * MoveType NONE oder NORMAL wird festgesetzt, jedoch kein Spielstein übergeben
+     *
+     * @param type Bewegungstyp
      */
     public MoveResult(MoveType type) {
         this(type, null);
@@ -24,6 +26,9 @@ public class MoveResult {
     /**
      * Konstruktor mit zwei Argumente für den MoveType KILL
      * Dabei wird der zu fressende Spielstein übergeben
+     *
+     * @param type Bewegungstyp
+     * @param piece Spielstein
      */
     public MoveResult(MoveType type, Piece piece) {
         this.type = type;
