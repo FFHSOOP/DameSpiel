@@ -263,7 +263,7 @@ public class Game {
 
                 System.out.println("NORMAL");
 
-                if (gameMode == 2) {
+                if (gameMode == 2 && piece.getType() == PieceType.WHITE) {
                     singlePlayer();
                 }
                 break;
@@ -309,7 +309,7 @@ public class Game {
                 System.out.println(gameInfo.getRound());
                 System.out.println("KILL");
 
-                if (gameMode == 2) {
+                if (gameMode == 2 && piece.getType() == PieceType.WHITE) {
                     singlePlayer();
                 }
                 break;

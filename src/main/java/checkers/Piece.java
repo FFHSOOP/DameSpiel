@@ -31,7 +31,7 @@ public class Piece extends StackPane {
      * setOnMousePressed: Speilstein bewegt sich mit bei gedrückter Mausbewegung
      * setOnMouseDragged: Beim loslassen der Maus wird der Spielstein verlagert
      *
-     * @param light Definiert Farbe des Steins BLACK oder WHITE per Enum Type TileType
+     * @param type PieceType des Spielsteins
      * @param x x-Position des Feldes
      * @param y y-Position des Feldes
      */
