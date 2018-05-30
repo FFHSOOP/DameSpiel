@@ -34,7 +34,6 @@ public class GameTest {
      * Initialisierung des Spiels fuer die Tests
      * Wird vor jedem Test ausgeführt
      *
-     * @throws java.lang.Exception
      */
     @Before
     public void initTestFixtures() {

@@ -61,7 +61,7 @@ public class Tile extends Rectangle {
     /**
      * Gibt zurueck ob das Feld einen Spielstein beinhaltet
      *
-     * @return
+     * @return Gibt boolean zurück ob Feld besetzt ist
      */
     public boolean hasPiece() {
         return piece != null;
@@ -70,7 +70,7 @@ public class Tile extends Rectangle {
     /**
      * Gibt die Farbe eines Feldes zurueck
      *
-     * @return
+     * @return Gibt TileType/Farbe zurück
      */
     public TileType getTileType() {
         return tileType;

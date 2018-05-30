@@ -140,6 +140,8 @@ public class Game {
 
     /**
      * Setzt gameMode auf Single oder Multiplayer
+     *
+     * @param mode Übergibt gameMode
      */
     protected void setGameMode(int mode) {
         gameMode = mode;

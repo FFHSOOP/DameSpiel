@@ -105,6 +105,7 @@ public class GameInfo {
      * Gibt den Winscreen fuer Hell aus
      *
      * @return Parent
+     * @throws FileNotFoundException Falls keine Dateigefunden wird
      */
     public Parent getWinScreenLight() throws FileNotFoundException {
         Image image = new Image(new FileInputStream("src/main/java/checkers/images/win_white.jpg"));
@@ -123,6 +124,7 @@ public class GameInfo {
      * Gibt den Winscreen fuer Dunkel aus
      *
      * @return Parent
+     * @throws FileNotFoundException Falls keine Dateigefunden wird
      */
     public Parent getWinScreenDark() throws FileNotFoundException {
         Image image = new Image(new FileInputStream("src/main/java/checkers/images/win_black.jpg"));
