@@ -124,7 +124,7 @@ public class Game {
      * @param stage
      */
     public void multiplayer(Stage stage) {
-        gameMode = 1;
+        gameMode = 1; //Gamemodus setzen
         Scene scene = new Scene(createContent());
         stage.setTitle("Checkers Draughts - Multiplayer");
         stage.setScene(scene);
@@ -138,7 +138,7 @@ public class Game {
      * @param stage
      */
     public void singleplayer(Stage stage) {
-        gameMode = 2;
+        gameMode = 2; //Gamemodus setzen
         Scene scene = new Scene(createContent());
         stage.setTitle("Checkers Draughts - Singleplayer");
         stage.setScene(scene);
@@ -293,6 +293,11 @@ public class Game {
                 } else if (piece.getType() == PieceType.BLACK) {
                     gameInfo.countUpLostLight();
                 }
+                //Pruefen ob das Spiel vorbei ist
+                if (gameInfo.gameOver()){
+                    
+                }
+                
                 //Zug wechseln und Runde hochzaehlen
                 if ((gameInfo.getTurn() == PieceType.WHITE && !hasToKillLight) || (gameInfo.getTurn() == PieceType.BLACK && !hasToKillDark)) {
                     gameInfo.countUpRound();
@@ -332,7 +337,6 @@ public class Game {
             if (hasToKillLight && (PieceType.WHITE == piece.getType()) || hasToKillDark && (PieceType.BLACK == piece.getType())) {
                 return new MoveResult(MoveType.NONE);
             }
-
             return new MoveResult(MoveType.NORMAL);
         } else if (Math.abs(newX - x0) == 2 && newY - y0 == piece.getType().moveDir * 2 || piece.isDraughts()) {
 

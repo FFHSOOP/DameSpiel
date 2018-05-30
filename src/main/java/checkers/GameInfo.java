@@ -1,8 +1,13 @@
 package checkers;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import javafx.geometry.Insets;
+import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
@@ -93,6 +98,42 @@ public class GameInfo {
      */
     public int getRound() {
         return round;
+    }
+    
+    /**
+     * Gibt den Winscreen fuer Hell aus
+     *
+     * @return Parent
+     */
+    public Parent getWinScreenLight() throws FileNotFoundException {
+        Image image = new Image(new FileInputStream("src/main/java/checkers/images/win_white.jpg"));
+        ImageView imageView = new ImageView(image);
+        //Position und Groesse setzen
+        imageView.setX(0);
+        imageView.setY(0);
+        imageView.setFitHeight(460);
+        imageView.setFitWidth(460);
+        imageView.setPreserveRatio(true);
+        
+        return new Group(imageView);
+    }
+
+    /**
+     * Gibt den Winscreen fuer Dunkel aus
+     *
+     * @return Parent
+     */
+    public Parent getWinScreenDark() throws FileNotFoundException {
+        Image image = new Image(new FileInputStream("src/main/java/checkers/images/win_black.jpg"));
+        ImageView imageView = new ImageView(image);
+        //Position und Groesse setzen
+        imageView.setX(0);
+        imageView.setY(0);
+        imageView.setFitHeight(460);
+        imageView.setFitWidth(460);
+        imageView.setPreserveRatio(true);
+        
+        return new Group(imageView);
     }
 
     /**
