@@ -513,7 +513,7 @@ public class Game {
         //Autokill falls hasToKillLight
         if (hasToKillLight) {
             performMove(nextPiece, nextX, nextY);
-        } else {
+        } else { //Ansonsten den vordesten Spielstein nach vorne bewegen
             for (int i = 0; i < WIDTH; i++) {
                 for (int q = 0; q < HEIGHT; q++) {
                     if (board[i][q].hasPiece()) {
