@@ -94,10 +94,10 @@ public class Game {
 
         //Button Icons
         try {
-            FileInputStream inSingle = new FileInputStream("src/main/java/checkers/icon/single.png");
+            FileInputStream inSingle = new FileInputStream("src/main/java/checkers/images/icon/single.png");
             Image imgSingle = new Image(inSingle);
             ImageView imageViewSingle = new ImageView(imgSingle);
-            FileInputStream inMulti = new FileInputStream("src/main/java/checkers/icon/multi.png");
+            FileInputStream inMulti = new FileInputStream("src/main/java/checkers/images/icon/multi.png");
             Image imgMulti = new Image(inMulti);
             ImageView imageViewMulti = new ImageView(imgMulti);
 
@@ -128,6 +128,7 @@ public class Game {
         Scene scene = new Scene(createContent());
         stage.setTitle("Checkers Draughts - Multiplayer");
         stage.setScene(scene);
+        stage.centerOnScreen();
         stage.show();
     }
 
@@ -141,6 +142,7 @@ public class Game {
         Scene scene = new Scene(createContent());
         stage.setTitle("Checkers Draughts - Singleplayer");
         stage.setScene(scene);
+        stage.centerOnScreen();
         stage.show();
     }
 
@@ -487,7 +489,9 @@ public class Game {
     }
 
     /**
-     * Singleplayer Modus
+     * Singleplayer Modus. Die Strategie des Computergegners ist, moeglichst
+     * schnell eine Dame zu erhalten. Die restlichen Spielsteine verbleiben in
+     * einer defensiven Stellung
      */
     public void singlePlayer() {
         //Autokill falls hasToKillLight
@@ -500,12 +504,14 @@ public class Game {
                         if (board[i][q].getPiece().getType() == PieceType.WHITE) {
                             Piece piece = board[i][q].getPiece();
                             //Bestimmung der Zugrichtung
+                            //Zugmoeglichkeiten für Dame
                             if (piece.isDraughts() && (toBoard(piece.getOldX()) + 1) < HEIGHT && (toBoard(piece.getOldY()) + 1) < WIDTH && tryMove(piece, toBoard(piece.getOldX()) + 1, toBoard(piece.getOldY()) + 1).getType() == MoveType.NORMAL) {
                                 performMove(piece, toBoard(piece.getOldX()) + 1, toBoard(piece.getOldY()) + 1);
                                 break;
                             } else if (piece.isDraughts() && (toBoard(piece.getOldX()) - 1) >= 0 && (toBoard(piece.getOldY()) + 1) < WIDTH && tryMove(piece, toBoard(piece.getOldX()) - 1, toBoard(piece.getOldY()) + 1).getType() == MoveType.NORMAL) {
                                 performMove(piece, toBoard(piece.getOldX()) - 1, toBoard(piece.getOldY()) + 1);
                                 break;
+                                //Zugmoeglichkeiten für alle
                             } else if ((toBoard(piece.getOldX()) - 1) >= 0 && (toBoard(piece.getOldY()) - 1) >= 0 && tryMove(piece, toBoard(piece.getOldX()) - 1, toBoard(piece.getOldY()) - 1).getType() == MoveType.NORMAL) {
                                 performMove(piece, toBoard(piece.getOldX()) - 1, toBoard(piece.getOldY()) - 1);
                                 break;
