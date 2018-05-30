@@ -34,55 +34,51 @@ public class Game {
 
     private boolean hasToKillLight;
     private boolean hasToKillDark;
-    
+
     //Singleplayer
     private Piece nextPiece;
     private int nextX;
     private int nextY;
-    
-    public Game() {
-	tileGroup = new Group();
-	pieceGroup = new Group();
-	gameInfo = new GameInfo();
-	board = new Tile[WIDTH][HEIGHT]; //Spielbrett mit allen Tiles
-	
-    }
-    
-    public Tile[][] getBoard() {
-	return board;
-    }
-    
-    public Group getTileGroup() {
-	return tileGroup;
-    }
-    
-    public Group getPieceGroup() {
-	return pieceGroup;
-    }
-    
-    public GameInfo getGameInfo() {
-	return gameInfo;
-    }
-    
-    public boolean getHasToKillLight() {
-	return hasToKillLight;
-    }
-    
-    public boolean getHasToKillDark() {
-	return hasToKillDark;
-    }
-    
-    public int getGameMode() {
-	return gameMode;
-    }
-    
-    protected void setGameMode(int mode) {
-	gameMode = mode;
-    }
-    
-    
 
-  
+    public Game() {
+        tileGroup = new Group();
+        pieceGroup = new Group();
+        gameInfo = new GameInfo();
+        board = new Tile[WIDTH][HEIGHT]; //Spielbrett mit allen Tiles
+
+    }
+
+    public Tile[][] getBoard() {
+        return board;
+    }
+
+    public Group getTileGroup() {
+        return tileGroup;
+    }
+
+    public Group getPieceGroup() {
+        return pieceGroup;
+    }
+
+    public GameInfo getGameInfo() {
+        return gameInfo;
+    }
+
+    public boolean getHasToKillLight() {
+        return hasToKillLight;
+    }
+
+    public boolean getHasToKillDark() {
+        return hasToKillDark;
+    }
+
+    public int getGameMode() {
+        return gameMode;
+    }
+
+    protected void setGameMode(int mode) {
+        gameMode = mode;
+    }
 
     /**
      * Hauptmenu
@@ -328,7 +324,6 @@ public class Game {
             return new MoveResult(MoveType.NONE);
         }
 
-
         // Wenn nur 1 Schritt und (Richtung stimmt oder Dame ist)
         if (Math.abs(newX - x0) == 1 && (newY - y0 == piece.getType().moveDir || piece.isDraughts())) {
 
@@ -375,7 +370,6 @@ public class Game {
         System.out.println("Size: " + pieceGroup.getChildren().size());
 
         for (int i = 0; i < pieceGroup.getChildren().size(); i++) {
-
 
             // änderungen bevor mehrfach nacheinander kill
             if (hasToKillLight || hasToKillDark) {
@@ -505,21 +499,20 @@ public class Game {
                     if (board[i][q].hasPiece()) {
                         if (board[i][q].getPiece().getType() == PieceType.WHITE) {
                             Piece piece = board[i][q].getPiece();
-                            if (piece.isDraughts()) {
-                                if ((toBoard(piece.getOldX()) + 1)<HEIGHT && (toBoard(piece.getOldY()) + 1)<WIDTH && tryMove(piece, toBoard(piece.getOldX()) + 1, toBoard(piece.getOldY()) + 1).getType() == MoveType.NORMAL) {
-                                    performMove(piece, toBoard(piece.getOldX()) + 1, toBoard(piece.getOldY()) + 1);
-                                    break;
-                                } else if ((toBoard(piece.getOldX()) - 1)>=0 && (toBoard(piece.getOldY()) + 1)<WIDTH && tryMove(piece, toBoard(piece.getOldX()) - 1, toBoard(piece.getOldY()) + 1).getType() == MoveType.NORMAL) {
-                                    performMove(piece, toBoard(piece.getOldX()) - 1, toBoard(piece.getOldY()) + 1);
-                                    break;
-                                }
-                            } else if ((toBoard(piece.getOldX()) - 1)>=0 && (toBoard(piece.getOldY()) - 1)>=0 && tryMove(piece, toBoard(piece.getOldX()) - 1, toBoard(piece.getOldY()) - 1).getType() == MoveType.NORMAL) {
+                            //Bestimmung der Zugrichtung
+                            if (piece.isDraughts() && (toBoard(piece.getOldX()) + 1) < HEIGHT && (toBoard(piece.getOldY()) + 1) < WIDTH && tryMove(piece, toBoard(piece.getOldX()) + 1, toBoard(piece.getOldY()) + 1).getType() == MoveType.NORMAL) {
+                                performMove(piece, toBoard(piece.getOldX()) + 1, toBoard(piece.getOldY()) + 1);
+                                break;
+                            } else if (piece.isDraughts() && (toBoard(piece.getOldX()) - 1) >= 0 && (toBoard(piece.getOldY()) + 1) < WIDTH && tryMove(piece, toBoard(piece.getOldX()) - 1, toBoard(piece.getOldY()) + 1).getType() == MoveType.NORMAL) {
+                                performMove(piece, toBoard(piece.getOldX()) - 1, toBoard(piece.getOldY()) + 1);
+                                break;
+                            } else if ((toBoard(piece.getOldX()) - 1) >= 0 && (toBoard(piece.getOldY()) - 1) >= 0 && tryMove(piece, toBoard(piece.getOldX()) - 1, toBoard(piece.getOldY()) - 1).getType() == MoveType.NORMAL) {
                                 performMove(piece, toBoard(piece.getOldX()) - 1, toBoard(piece.getOldY()) - 1);
                                 break;
-                            } else if ((toBoard(piece.getOldX()) + 1)<HEIGHT && (toBoard(piece.getOldY()) - 1)>=0 && tryMove(piece, toBoard(piece.getOldX()) + 1, toBoard(piece.getOldY()) - 1).getType() == MoveType.NORMAL) {
+                            } else if ((toBoard(piece.getOldX()) + 1) < HEIGHT && (toBoard(piece.getOldY()) - 1) >= 0 && tryMove(piece, toBoard(piece.getOldX()) + 1, toBoard(piece.getOldY()) - 1).getType() == MoveType.NORMAL) {
                                 performMove(piece, toBoard(piece.getOldX()) + 1, toBoard(piece.getOldY()) - 1);
                                 break;
-                            }        
+                            }
                         }
                     }
                 }
