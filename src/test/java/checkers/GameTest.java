@@ -32,7 +32,7 @@ public class GameTest {
 
     /**
      * Initialisierung des Spiels fuer die Tests
-     * Wird vor jedem Test ausgef�hrt
+     * Wird vor jedem Test ausgeführt
      *
      * @throws java.lang.Exception
      */
@@ -45,7 +45,7 @@ public class GameTest {
     }
 
     /**
-     * Test ob die H�he und die Weite des Spielbretts richtig sind
+     * Test ob die Höhe und die Weite des Spielbretts richtig sind
      */
     @Test
     public void testBoardSize() {
@@ -55,7 +55,7 @@ public class GameTest {
         int yb = board.length;
 
         assertEquals(xa, xb, "nicht richtige Weite!");
-        assertEquals(ya, yb, "nicht richtige H�he!");
+        assertEquals(ya, yb, "nicht richtige Höhe!");
     }
 
     /**
@@ -135,7 +135,7 @@ public class GameTest {
 
 
     /**
-     * Setup der Spielsteine f�r die Tests
+     * Setup der Spielsteine für die Tests
      * <p>
      * [ ][ ][ ][b][ ][b][ ][b]
      * [b][ ][b][ ][ ][ ][b][ ]
@@ -253,7 +253,7 @@ public class GameTest {
     }
 
     /**
-     * Testet ob ein Stein trotz eines m�glichen Kills normal bewegt werden kann
+     * Testet ob ein Stein trotz eines möglichen Kills normal bewegt werden kann
      */
 
     @Test
@@ -272,7 +272,7 @@ public class GameTest {
 
 
     /**
-     * Testet ob ein Stein einen Kill ausf�hren kann und der gekillte Stein entfernt wird
+     * Testet ob ein Stein einen Kill ausführen kann und der gekillte Stein entfernt wird
      */
     @Test
     public void testPerformKillMove() {
@@ -291,7 +291,7 @@ public class GameTest {
     }
 
     /**
-     * Test ob mehrere Steine gekillt werden k�nnen
+     * Test ob mehrere Steine gekillt werden können
      */
     @Test
     public void testMultiKill() {
