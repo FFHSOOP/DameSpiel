@@ -1,7 +1,7 @@
 package checkers;
 
 /**
- * Feldfarben
+ * Enum Type Definition der Feldfarben
  *
  * @author Marco Wyssmann
  * @author Benjamin Steffen

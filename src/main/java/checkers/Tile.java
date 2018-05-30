@@ -4,7 +4,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 /**
- * Repraesentiert ein Feld auf dem Spielbrett
+ * Repräsentiert ein Feld auf dem Spielbrett
  *
  * @author Marco Wyssmann
  * @author Benjamin Steffen
@@ -17,10 +17,12 @@ public class Tile extends Rectangle {
     private TileType tileType;
 
     /**
-     * 
-     * @param light
-     * @param x
-     * @param y 
+     * Konstruktor eines Feldes
+     * Setzt die Farbe, Dimension und Platzierun mit JavaFX Funktionen
+     *
+     * @param light Definiert Farbe des Steins BLACK oder WHITE per Enum Type TileType
+     * @param x x-Position des Feldes
+     * @param y y-Position des Feldes
      */
     public Tile(boolean light, int x, int y) {
         setWidth(Game.TILE_SIZE);
@@ -30,9 +32,11 @@ public class Tile extends Rectangle {
 
         setFill(light ? Color.valueOf("#fff9e9") : Color.valueOf("#986430"));
         
-        if(light) {
+        if (light) {
             tileType = TileType.WHITE;
-        }else {tileType = TileType.BLACK;}
+        } else {
+            tileType = TileType.BLACK;
+        }
     }
     
 

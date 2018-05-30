@@ -8,7 +8,7 @@ import javafx.scene.shape.SVGPath;
 import static checkers.Game.TILE_SIZE;
 
 /**
- * Repraesentiert einen Spielstein
+ * Repraesentiert ein Spielstein
  *
  * @author Marco Wyssmann
  * @author Benjamin Steffen
@@ -25,11 +25,17 @@ public class Piece extends StackPane {
     private boolean draughts;
 
     /**
-     * 
-     * @param type
-     * @param x
-     * @param y 
+     * Konstruktor eines Spielsteins
+     * Setzt die Farbe, Dimension und Platzierung mit JavaFX Funktionen
+     *
+     * setOnMousePressed: Speilstein bewegt sich mit bei gedrückter Mausbewegung
+     * setOnMouseDragged: Beim loslassen der Maus wird der Spielstein verlagert
+     *
+     * @param light Definiert Farbe des Steins BLACK oder WHITE per Enum Type TileType
+     * @param x x-Position des Feldes
+     * @param y y-Position des Feldes
      */
+
     public Piece(PieceType type, int x, int y) {
         this.type = type;
 
@@ -68,32 +74,22 @@ public class Piece extends StackPane {
     }
     
     /**
+     * Gibt Zustand über Dame zurück
      * 
-     * @return 
+     * @return Zustand ob Spielstein Dame ist
      */
     public boolean isDraughts() {
         return draughts;
     }
 
     /**
+     * Setzt den Wert der Dame und verleiht dem Spielsteine eine Krone
      * 
-     * @param draughts 
+     * @param draughts Setzt den Wert der Dame
      */
     public void setDraughts(boolean draughts) {
         this.draughts = draughts;
-/**
-        Ellipse ellipse = new Ellipse(TILE_SIZE * 0.15625, TILE_SIZE * 0.13);
-        ellipse.setFill(Color.BLACK);
 
-        //ellipse.setStroke(Color.BLACK);
-        //ellipse.setStrokeWidth(TILE_SIZE * 0.03);
-        ellipse.setTranslateX((TILE_SIZE - TILE_SIZE * 0.3125 * 2) / 2);
-        ellipse.setTranslateY((TILE_SIZE - TILE_SIZE * 0.26 * 2) / 2);
-
-        getChildren().add(ellipse);
- **/
-        
-        
         SVGPath svgPath = new SVGPath();
         String path ="M" + TILE_SIZE * 0.32 + "," + TILE_SIZE * 0.06 + " " 
         		 + TILE_SIZE * 0.23 + "," + TILE_SIZE * 0.15 + " "
@@ -113,25 +109,29 @@ public class Piece extends StackPane {
         getChildren().add(svgPath);
         
     }
+
     /**
-     * 
-     * @return 
+     * Fragt den PieceType des Spielsteins ab
+     *
+     * @return Gibt den PieceType zurück
      */
     public PieceType getType() {
         return type;
     }
 
     /**
-     * Gibt die alte X Position zurueck
-     * @return 
+     * Fragt die alte alte x-Position ab
+     *
+     * @return Gibt die alte x-Position zurück
      */
     public double getOldX() {
         return oldX;
     }
 
     /**
-     * Gibt die alte Y Position zurueck
-     * @return 
+     * Fragt die alte alte y-Position ab
+     *
+     * @return Gibt die alte y-Position zurück
      */
     public double getOldY() {
         return oldY;
@@ -140,8 +140,8 @@ public class Piece extends StackPane {
     /**
      * Verschiebt den Spielstein
      *
-     * @param x Position in Spielfeldkoordinate 0 bis WIDTH - 1
-     * @param y Position in Spielfeldkoordinate 0 bis HEIGHT - 1
+     * @param x-Position in Spielfeldkoordinate 0 bis WIDTH - 1
+     * @param y-Position in Spielfeldkoordinate 0 bis HEIGHT - 1
      */
     public void move(int x, int y) {
         oldX = x * TILE_SIZE;

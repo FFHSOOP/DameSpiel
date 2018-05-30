@@ -1,7 +1,8 @@
 package checkers;
 
 /**
- * Spielstein Typen
+ * Enum Type Definition der Spielsteinee
+ * Farbe und Spielrichtung des Steins
  *
  * @author Marco Wyssmann
  * @author Benjamin Steffen

@@ -1,7 +1,11 @@
 package checkers;
 
 /**
- * Bewegungstypen
+ * Enum Type Definition der 3 Bewegungstypen
+ *
+ * NONE: Findet keine Bewegung statt
+ * NORMAL: Eine einfache Bewegung des Spielsteins
+ * KILL: Ein Spielstein wird während Bewegng gefressen
  *
  * @author Marco Wyssmann
  * @author Benjamin Steffen
