@@ -18,6 +18,34 @@ import java.io.FileNotFoundException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+
+/**
+ * Hauptlogik des Spiels
+ *
+ * TILE_SIZE: Grösse eines einzelnen Feldes
+ * WIDTH: Anzahl Felder Breite
+ * HEIGHT: Anzahl Felder Höhe
+ *
+ * board: Spielbrett
+ *
+ * tileGroup: Group die alle Felder fasst
+ * pieceGroup: Group die alle Spielsteine fasst
+ * gameInfo: Fasst alle Spielinformationen
+ * gameMode: Definiert Single oder Multiplayer
+ *
+ * hasToKillLight: Definiert ob weiss fressen muss
+ * hasToKillDark: Definiert ob schwarz fressen muss
+ *
+ * nextPiece: Spielstein das von der KI gefressen werden muss
+ * nextX: x-Position wohin KI Spielstein bewegen muss
+ * nextY: y-Position wohin KI Spielstein bewegen muss
+ *
+ *
+ * @author Marco Wyssmann
+ * @author Benjamin Steffen
+ * @author Stefan Nyffenegger
+ * @version 1.0
+ */
 public class Game {
 
     public static final int TILE_SIZE = 100; //Groesse eines einzelnen Feldes
