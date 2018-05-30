@@ -18,6 +18,33 @@ import java.io.FileNotFoundException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Hauptlogik des Spiels
+ *
+ * TILE_SIZE: Grösse eines einzelnen Feldes
+ * WIDTH: Anzahl Felder Breite
+ * HEIGHT: Anzahl Felder Höhe
+ *
+ * board: Spielbrett
+ *
+ * tileGroup: Group die alle Felder fasst
+ * pieceGroup: Group die alle Spielsteine fasst
+ * gameInfo: Fasst alle Spielinformationen
+ * gameMode: Definiert Single oder Multiplayer
+ *
+ * hasToKillLight: Definiert ob weiss fressen muss
+ * hasToKillDark: Definiert ob schwarz fressen muss
+ *
+ * nextPiece: Spielstein das von der KI gefressen werden muss
+ * nextX: x-Position wohin KI Spielstein bewegen muss
+ * nextY: y-Position wohin KI Spielstein bewegen muss
+ *
+ *
+ * @author Marco Wyssmann
+ * @author Benjamin Steffen
+ * @author Stefan Nyffenegger
+ * @version 1.0
+ */
 public class Game {
 
     public static final int TILE_SIZE = 100; //Groesse eines einzelnen Feldes
@@ -28,7 +55,7 @@ public class Game {
 
     private Group tileGroup; //Felder
     private Group pieceGroup; //Spielsteine
-    private GameInfo gameInfo;
+    private GameInfo gameInfo; // GameInfo
 
     private int gameMode; //1=Multi, 2=Single
 
@@ -47,48 +74,85 @@ public class Game {
 	board = new Tile[WIDTH][HEIGHT]; //Spielbrett mit allen Tiles
 	
     }
-    
+
+    /**
+     * Fragt Spielbrett ab
+     *
+     * @return Gibt Spielbrett zurück
+     */
     public Tile[][] getBoard() {
 	return board;
     }
-    
+
+    /**
+     * Fragt Feldgruppe ab
+     *
+     * @return Gibt Feldgruppe zurück
+     */
     public Group getTileGroup() {
 	return tileGroup;
     }
-    
+
+    /**
+     * Fragt Spielsteingruppe ab
+     *
+     * @return Gibt Spielsteingruppe zurück
+     */
     public Group getPieceGroup() {
 	return pieceGroup;
     }
-    
+
+    /**
+     * Fragt GameInfo ab
+     *
+     * @return Gibt GameInfo zurück
+     */
     public GameInfo getGameInfo() {
 	return gameInfo;
     }
-    
+
+    /**
+     * Fragt hasToKillLight ab
+     *
+     * @return Gibt hasToKillLight zurück
+     */
     public boolean getHasToKillLight() {
 	return hasToKillLight;
     }
-    
+
+    /**
+     * Fragt HasToKillDark ab
+     *
+     * @return Gibt HasToKillDark zurück
+     */
     public boolean getHasToKillDark() {
 	return hasToKillDark;
     }
-    
+
+    /**
+     * Fragt gameMode ab
+     *
+     * @return Gibt gameMode zurück
+     */
     public int getGameMode() {
 	return gameMode;
     }
-    
+
+    /**
+     * Setzt gameMode auf Single oder Multiplayer
+     *
+     */
     protected void setGameMode(int mode) {
 	gameMode = mode;
     }
     
     
-
-  
-
     /**
-     * Hauptmenu
+     * Erstellt das Hauptmenü
+     * Lädt zwei Bilddateien für das Menü der Spielerauswahl
      *
-     * @param stage
-     * @return
+     * @param stage Übergabe der Stage
+     * @return Liefert das JavaFX Parent-Objekt zurück
      */
     public Parent createMenu(Stage stage) {
         FlowPane menu = new FlowPane();
@@ -124,8 +188,9 @@ public class Game {
 
     /**
      * Multiplayer Modus
+     * Initialisiert die Scene und Stage für den Multiplayer Modus
      *
-     * @param stage
+     * @param stage Übergabe der Stage
      */
     public void multiplayer(Stage stage) {
         gameMode = 1;
@@ -137,8 +202,9 @@ public class Game {
 
     /**
      * Singleplayer Modus
+     * Initialisiert die Scene und Stage für den Singleplayer Modus
      *
-     * @param stage
+     * @param stage Übergabe der Stage
      */
     public void singleplayer(Stage stage) {
         gameMode = 2;
@@ -150,8 +216,9 @@ public class Game {
 
     /**
      * Initialer Aufbau des Spielfeldes
+     * Erstellt das JavaFX Parent Objekt
      *
-     * @return
+     * @return Liefert das Parent Objekt zurück
      */
     protected Parent createContent() {
         Pane root = new Pane();
@@ -187,11 +254,12 @@ public class Game {
 
     /**
      * Erstellt die initialen Spielsteine
+     * setOnMouseReleased: Definiert den Aufruf beim loslassen des Spielsteins
      *
-     * @param type
-     * @param x
-     * @param y
-     * @return
+     * @param type PieceType des Spielsteins
+     * @param x x-Position des Feldes
+     * @param y y-Position des Feldes
+     * @return Liefert den Spielstein zurück
      */
     private Piece makePiece(PieceType type, int x, int y) {
         Piece piece = new Piece(type, x, y);
@@ -210,10 +278,15 @@ public class Game {
 
     /**
      * Fuehrt den Move aus
+     * Prüft mit einer Switch Case Anweisung den MoveType
+     * NONE: Bricht Aktion ab
+     * MOVE: Führt Move aus und prüft ob Gegner nächste Runde ziehen kann
+     * KILL: Frisst Spielstein und prüft ob Gegner nächste Runde ziehen kann
+     * MOVE und KILL aktualisieren die Game Informationen
      *
-     * @param piece Spielstein
-     * @param newX neue X Position
-     * @param newY neue Y Position
+     * @param piece Übergabe des Spielsteins
+     * @param newX neue x-Position
+     * @param newY neue y-Position
      */
     public void performMove(Piece piece, int newX, int newY) {
         MoveResult result;
@@ -227,7 +300,6 @@ public class Game {
                 result = tryMove(piece, newX, newY);
             }
         } else {
-            System.out.println("Sorry not your turn");
             result = new MoveResult(MoveType.NONE);
         }
 
@@ -237,7 +309,7 @@ public class Game {
         switch (result.getType()) {
             case NONE:
                 piece.abortMove();
-                System.out.println("NONE");
+                //System.out.println("NONE");
                 break;
             case NORMAL:
                 piece.move(newX, newY);
@@ -249,14 +321,14 @@ public class Game {
                     piece.setDraughts(true);
                 }
 
-                // check ob gegner killen können für nächsten turn
-                canKill(piece);
+                // Check ob Gegner nächste Runde fressen kann
+                canKill();
 
                 gameInfo.countUpRound();
                 gameInfo.changeTurn();
                 gameInfo.updateGameInfo();
-                System.out.println(gameInfo.getRound());
-                System.out.println("NORMAL");
+                // System.out.println(gameInfo.getRound());
+                // System.out.println("NORMAL");
 
                 if (gameMode == 2 && gameInfo.getTurn() == PieceType.WHITE) {
                     singlePlayer();
@@ -276,10 +348,10 @@ public class Game {
                 board[toBoard(otherPiece.getOldX())][toBoard(otherPiece.getOldY())].setPiece(null);
                 pieceGroup.getChildren().remove(otherPiece);
 
-                // check ob gegner killen können für nächsten turn
-                canKill(piece);
+                // Check ob Gegner nächste Runde fressen kann
+                canKill();
 
-                // check ob gleicher stein nochmals killen kann
+                // Check ob gleicher Spielstein nochmals fressen kann
                 if (piece.getType() == PieceType.BLACK || piece.isDraughts()) {
                     checkKill(piece, 3);
                     checkKill(piece, 4);
@@ -289,20 +361,20 @@ public class Game {
                     checkKill(piece, 2);
                 }
 
-                //Verlorene Spielsteine hochzaehlen
+                // Verlorene Spielsteine hochzaehlen
                 if (piece.getType() == PieceType.WHITE) {
                     gameInfo.countUpLostDark();
                 } else if (piece.getType() == PieceType.BLACK) {
                     gameInfo.countUpLostLight();
                 }
-                //Zug wechseln und Runde hochzaehlen
+                // Zug wechseln und Runde hochzaehlen
                 if ((gameInfo.getTurn() == PieceType.WHITE && !hasToKillLight) || (gameInfo.getTurn() == PieceType.BLACK && !hasToKillDark)) {
                     gameInfo.countUpRound();
                     gameInfo.changeTurn();
                 }
                 gameInfo.updateGameInfo();
-                System.out.println(gameInfo.getRound());
-                System.out.println("KILL");
+                // System.out.println(gameInfo.getRound());
+                // System.out.println("KILL");
 
                 if (gameMode == 2 && gameInfo.getTurn() == PieceType.WHITE) {
                     singlePlayer();
@@ -312,7 +384,7 @@ public class Game {
     }
 
     /**
-     * Gibt zurueck was fuer ein MoveType durchgefuehrt wird
+     * Prüft ob eine gültige Bewegung ausgeführt wurde und gibt entsprechend MoveType zurück
      *
      * @param piece Spielstein
      * @param newX neue X Position
@@ -328,8 +400,7 @@ public class Game {
             return new MoveResult(MoveType.NONE);
         }
 
-
-        // Wenn nur 1 Schritt und (Richtung stimmt oder Dame ist)
+        // Wenn nur ein Schritt und (Richtung stimmt oder Dame ist)
         if (Math.abs(newX - x0) == 1 && (newY - y0 == piece.getType().moveDir || piece.isDraughts())) {
 
             if (hasToKillLight && (PieceType.WHITE == piece.getType()) || hasToKillDark && (PieceType.BLACK == piece.getType())) {
@@ -351,7 +422,7 @@ public class Game {
     }
 
     /**
-     * Findet heraus welchem Feld die Position entspricht
+     * Findet anhand der Position das entsprechende Feld
      *
      * @param pixel Pixelposition auf dem Spielbrett
      * @return Spielbrettposition
@@ -361,18 +432,18 @@ public class Game {
     }
 
     /**
-     * Prueft ob ein Spielstein einen anderen schlagen kann
+     * Lässt alle Spielsteine des Gegner prüfen ob gefressen werden kann
+     * Dafür wird ein Spielstein genommen und der checkKill Methode übergeben
      *
-     * @param piece
      */
-    private void canKill(Piece piece) {
+    private void canKill() {
 
         hasToKillLight = false;
         hasToKillDark = false;
 
         PieceType currentPlayer = gameInfo.getTurn();
 
-        System.out.println("Size: " + pieceGroup.getChildren().size());
+        // System.out.println("Size: " + pieceGroup.getChildren().size());
 
         for (int i = 0; i < pieceGroup.getChildren().size(); i++) {
 
@@ -403,10 +474,10 @@ public class Game {
     }
 
     /**
-     * Prueft ob ein Spielstein einen anderen schlagen kann
+     * Lässt ein Spielsteine des Gegners in eine Richtung prüfen ob gefressen werden kann und setzt entsprechend globale Variabel
      *
-     * @param activePiece
-     * @param direction
+     * @param activePiece Zu prüfender Spielstein
+     * @param direction Zu prüfende Richtung
      */
     private void checkKill(Piece activePiece, int direction) {
 
@@ -439,49 +510,53 @@ public class Game {
                 break;
         }
 
-        // Zu überprüfendes kill feld auf gültigkeit auf spielfeld prüfen
+        // Das nächste Feld auf Gültigkeit prüfem
         if (oldX + x >= 0 && oldX + x <= 7 && oldY + y >= 0 && oldY + y <= 7) {
 
             if (board[oldX + x][oldY + y].hasPiece() && (board[oldX + x][oldY + y].getPiece().getType() != activePiece.getType())) {
-                System.out.println("check if hasToKill");
+                // System.out.println("check if hasToKill");
 
+                // Das Feld nach Gegner auf Gültigkeit prüfen
                 if (oldX + (x * 2) >= 0 && oldX + (x * 2) <= 7 && oldY + (y * 2) >= 0 && oldY + (y * 2) <= 7) {
 
                     if (!board[oldX + (x * 2)][oldY + (y * 2)].hasPiece()) {
+                        // Treffer Spielstein kann fressen
                         if (PieceType.WHITE == activePiece.getType()) {
-                            System.out.println("hasToKillLight");
+                            // System.out.println("hasToKillLight");
                             hasToKillLight = true;
                             if (gameMode == 2) {
                                 //Falls Singleplayer
-                                System.out.println("autokill");
+                                // System.out.println("autokill");
                                 nextPiece = activePiece;
                                 nextX = oldX + (x * 2);
                                 nextY = oldY + (y * 2);
                             }
                         } else {
-                            System.out.println("hasToKillDark");
+                            // System.out.println("hasToKillDark");
                             hasToKillDark = true;
                         }
                     }
 
                 }
 
-                //Handling falls outside of board
+                // Prüft ob Feind fressen kann
                 if (oldX - x >= 0 && oldX - x <= 7 && oldY - y >= 0 && oldY - y <= 7) {
                     if (!board[oldX - x][oldY - y].hasPiece()) {
 
+                        // Feind kann fressen
                         if (PieceType.WHITE == activePiece.getType()) {
-                            System.out.println("hasToKillDark");
+                            // System.out.println("hasToKillDark");
                             hasToKillDark = true;
-                            //Falls Singleplayer
+
+                            //Falls Singleplayer kann KI fressen
                             if (gameMode == 2) {
-                                System.out.println("autokill");
+                                //System.out.println("autokill");
                                 nextPiece = activePiece;
                                 nextX = oldX + (x * 2);
                                 nextY = oldY + (y * 2);
                             }
                         } else {
-                            System.out.println("hasToKillLight");
+                            // System.out.println("hasToKillLight");
                             hasToKillLight = true;
                         }
                     }
@@ -494,6 +569,7 @@ public class Game {
 
     /**
      * Singleplayer Modus
+     *
      */
     public void singlePlayer() {
         //Autokill falls hasToKillLight
