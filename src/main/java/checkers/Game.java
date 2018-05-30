@@ -510,13 +510,7 @@ public class Game {
                     if (board[i][q].hasPiece()) {
                         if (board[i][q].getPiece().getType() == PieceType.WHITE) {
                             Piece piece = board[i][q].getPiece();
-                            if ((toBoard(piece.getOldX()) - 1)>=0 && (toBoard(piece.getOldY()) - 1)>=0 && tryMove(piece, toBoard(piece.getOldX()) - 1, toBoard(piece.getOldY()) - 1).getType() == MoveType.NORMAL) {
-                                performMove(piece, toBoard(piece.getOldX()) - 1, toBoard(piece.getOldY()) - 1);
-                                break;
-                            } else if ((toBoard(piece.getOldX()) + 1)<HEIGHT && (toBoard(piece.getOldY()) - 1)>=0 && tryMove(piece, toBoard(piece.getOldX()) + 1, toBoard(piece.getOldY()) - 1).getType() == MoveType.NORMAL) {
-                                performMove(piece, toBoard(piece.getOldX()) + 1, toBoard(piece.getOldY()) - 1);
-                                break;
-                            } else if (piece.isDraughts()) {
+                            if (piece.isDraughts()) {
                                 if ((toBoard(piece.getOldX()) + 1)<HEIGHT && (toBoard(piece.getOldY()) + 1)<WIDTH && tryMove(piece, toBoard(piece.getOldX()) + 1, toBoard(piece.getOldY()) + 1).getType() == MoveType.NORMAL) {
                                     performMove(piece, toBoard(piece.getOldX()) + 1, toBoard(piece.getOldY()) + 1);
                                     break;
@@ -524,7 +518,13 @@ public class Game {
                                     performMove(piece, toBoard(piece.getOldX()) - 1, toBoard(piece.getOldY()) + 1);
                                     break;
                                 }
-                            }
+                            } else if ((toBoard(piece.getOldX()) - 1)>=0 && (toBoard(piece.getOldY()) - 1)>=0 && tryMove(piece, toBoard(piece.getOldX()) - 1, toBoard(piece.getOldY()) - 1).getType() == MoveType.NORMAL) {
+                                performMove(piece, toBoard(piece.getOldX()) - 1, toBoard(piece.getOldY()) - 1);
+                                break;
+                            } else if ((toBoard(piece.getOldX()) + 1)<HEIGHT && (toBoard(piece.getOldY()) - 1)>=0 && tryMove(piece, toBoard(piece.getOldX()) + 1, toBoard(piece.getOldY()) - 1).getType() == MoveType.NORMAL) {
+                                performMove(piece, toBoard(piece.getOldX()) + 1, toBoard(piece.getOldY()) - 1);
+                                break;
+                            }        
                         }
                     }
                 }
