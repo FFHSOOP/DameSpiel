@@ -1,7 +1,5 @@
 package checkers;
 
-import java.util.ArrayList;
-
 /**
  * Definiert ein Resultat einer Bewegung und bestimmt so die Art der Ausführung in der Game Klasse
  *

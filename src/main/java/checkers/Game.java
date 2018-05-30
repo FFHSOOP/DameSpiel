@@ -18,33 +18,6 @@ import java.io.FileNotFoundException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Hauptlogik des Spiels
- *
- * TILE_SIZE: Grösse eines einzelnen Feldes
- * WIDTH: Anzahl Felder Breite
- * HEIGHT: Anzahl Felder Höhe
- *
- * board: Spielbrett
- *
- * tileGroup: Group die alle Felder fasst
- * pieceGroup: Group die alle Spielsteine fasst
- * gameInfo: Fasst alle Spielinformationen
- * gameMode: Definiert Single oder Multiplayer
- *
- * hasToKillLight: Definiert ob weiss fressen muss
- * hasToKillDark: Definiert ob schwarz fressen muss
- *
- * nextPiece: Spielstein das von der KI gefressen werden muss
- * nextX: x-Position wohin KI Spielstein bewegen muss
- * nextY: y-Position wohin KI Spielstein bewegen muss
- *
- *
- * @author Marco Wyssmann
- * @author Benjamin Steffen
- * @author Stefan Nyffenegger
- * @version 1.0
- */
 public class Game {
 
     public static final int TILE_SIZE = 100; //Groesse eines einzelnen Feldes
@@ -61,18 +34,18 @@ public class Game {
 
     private boolean hasToKillLight;
     private boolean hasToKillDark;
-    
+
     //Singleplayer
     private Piece nextPiece;
     private int nextX;
     private int nextY;
-    
+
     public Game() {
-	tileGroup = new Group();
-	pieceGroup = new Group();
-	gameInfo = new GameInfo();
-	board = new Tile[WIDTH][HEIGHT]; //Spielbrett mit allen Tiles
-	
+        tileGroup = new Group();
+        pieceGroup = new Group();
+        gameInfo = new GameInfo();
+        board = new Tile[WIDTH][HEIGHT]; //Spielbrett mit allen Tiles
+
     }
 
     /**
@@ -145,8 +118,7 @@ public class Game {
     protected void setGameMode(int mode) {
 	gameMode = mode;
     }
-    
-    
+
     /**
      * Erstellt das Hauptmenü
      * Lädt zwei Bilddateien für das Menü der Spielerauswahl
@@ -162,10 +134,10 @@ public class Game {
 
         //Button Icons
         try {
-            FileInputStream inSingle = new FileInputStream("src/main/java/checkers/icon/single.png");
+            FileInputStream inSingle = new FileInputStream("src/main/java/checkers/images/icon/single.png");
             Image imgSingle = new Image(inSingle);
             ImageView imageViewSingle = new ImageView(imgSingle);
-            FileInputStream inMulti = new FileInputStream("src/main/java/checkers/icon/multi.png");
+            FileInputStream inMulti = new FileInputStream("src/main/java/checkers/images/icon/multi.png");
             Image imgMulti = new Image(inMulti);
             ImageView imageViewMulti = new ImageView(imgMulti);
 
@@ -197,6 +169,7 @@ public class Game {
         Scene scene = new Scene(createContent());
         stage.setTitle("Checkers Draughts - Multiplayer");
         stage.setScene(scene);
+        stage.centerOnScreen();
         stage.show();
     }
 
@@ -211,6 +184,7 @@ public class Game {
         Scene scene = new Scene(createContent());
         stage.setTitle("Checkers Draughts - Singleplayer");
         stage.setScene(scene);
+        stage.centerOnScreen();
         stage.show();
     }
 
@@ -447,7 +421,6 @@ public class Game {
 
         for (int i = 0; i < pieceGroup.getChildren().size(); i++) {
 
-
             // änderungen bevor mehrfach nacheinander kill
             if (hasToKillLight || hasToKillDark) {
                 break;
@@ -570,6 +543,9 @@ public class Game {
     /**
      * Singleplayer Modus
      *
+     * Singleplayer Modus. Die Strategie des Computergegners ist, moeglichst
+     * schnell eine Dame zu erhalten. Die restlichen Spielsteine verbleiben in
+     * einer defensiven Stellung
      */
     public void singlePlayer() {
         //Autokill falls hasToKillLight
@@ -581,21 +557,22 @@ public class Game {
                     if (board[i][q].hasPiece()) {
                         if (board[i][q].getPiece().getType() == PieceType.WHITE) {
                             Piece piece = board[i][q].getPiece();
-                            if (piece.isDraughts()) {
-                                if ((toBoard(piece.getOldX()) + 1)<HEIGHT && (toBoard(piece.getOldY()) + 1)<WIDTH && tryMove(piece, toBoard(piece.getOldX()) + 1, toBoard(piece.getOldY()) + 1).getType() == MoveType.NORMAL) {
-                                    performMove(piece, toBoard(piece.getOldX()) + 1, toBoard(piece.getOldY()) + 1);
-                                    break;
-                                } else if ((toBoard(piece.getOldX()) - 1)>=0 && (toBoard(piece.getOldY()) + 1)<WIDTH && tryMove(piece, toBoard(piece.getOldX()) - 1, toBoard(piece.getOldY()) + 1).getType() == MoveType.NORMAL) {
-                                    performMove(piece, toBoard(piece.getOldX()) - 1, toBoard(piece.getOldY()) + 1);
-                                    break;
-                                }
-                            } else if ((toBoard(piece.getOldX()) - 1)>=0 && (toBoard(piece.getOldY()) - 1)>=0 && tryMove(piece, toBoard(piece.getOldX()) - 1, toBoard(piece.getOldY()) - 1).getType() == MoveType.NORMAL) {
+                            //Bestimmung der Zugrichtung
+                            //Zugmoeglichkeiten für Dame
+                            if (piece.isDraughts() && (toBoard(piece.getOldX()) + 1) < HEIGHT && (toBoard(piece.getOldY()) + 1) < WIDTH && tryMove(piece, toBoard(piece.getOldX()) + 1, toBoard(piece.getOldY()) + 1).getType() == MoveType.NORMAL) {
+                                performMove(piece, toBoard(piece.getOldX()) + 1, toBoard(piece.getOldY()) + 1);
+                                break;
+                            } else if (piece.isDraughts() && (toBoard(piece.getOldX()) - 1) >= 0 && (toBoard(piece.getOldY()) + 1) < WIDTH && tryMove(piece, toBoard(piece.getOldX()) - 1, toBoard(piece.getOldY()) + 1).getType() == MoveType.NORMAL) {
+                                performMove(piece, toBoard(piece.getOldX()) - 1, toBoard(piece.getOldY()) + 1);
+                                break;
+                                //Zugmoeglichkeiten für alle
+                            } else if ((toBoard(piece.getOldX()) - 1) >= 0 && (toBoard(piece.getOldY()) - 1) >= 0 && tryMove(piece, toBoard(piece.getOldX()) - 1, toBoard(piece.getOldY()) - 1).getType() == MoveType.NORMAL) {
                                 performMove(piece, toBoard(piece.getOldX()) - 1, toBoard(piece.getOldY()) - 1);
                                 break;
-                            } else if ((toBoard(piece.getOldX()) + 1)<HEIGHT && (toBoard(piece.getOldY()) - 1)>=0 && tryMove(piece, toBoard(piece.getOldX()) + 1, toBoard(piece.getOldY()) - 1).getType() == MoveType.NORMAL) {
+                            } else if ((toBoard(piece.getOldX()) + 1) < HEIGHT && (toBoard(piece.getOldY()) - 1) >= 0 && tryMove(piece, toBoard(piece.getOldX()) + 1, toBoard(piece.getOldY()) - 1).getType() == MoveType.NORMAL) {
                                 performMove(piece, toBoard(piece.getOldX()) + 1, toBoard(piece.getOldY()) - 1);
                                 break;
-                            }        
+                            }
                         }
                     }
                 }

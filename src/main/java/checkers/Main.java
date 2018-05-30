@@ -38,6 +38,7 @@ public class Main extends Application {
         Scene scene = new Scene( game.createMenu(primaryStage) );
         primaryStage.setTitle("Checkers Draughts - Menu");
         primaryStage.setScene(scene);
+        primaryStage.centerOnScreen();
         primaryStage.show();
     }
 }

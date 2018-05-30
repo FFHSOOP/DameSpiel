@@ -38,8 +38,6 @@ public class GameInfo {
         gameInfo.relocate(0, 800);
         gameInfo.setPadding(new Insets(10));
         gameInfo.setSpacing(10);
-        //gameInfo.setHgap(10);
-        //gameInfo.setVgap(10);
         lbRound = new Label("Runde " + round);
         lbTurnOf = new Label("Dunkel kann beginnen");
         lbLostLight = new Label("Verlorene Spielsteine Hell: " + lostLight);
