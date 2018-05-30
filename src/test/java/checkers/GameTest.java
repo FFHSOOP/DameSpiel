@@ -27,7 +27,7 @@ public class GameTest {
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        JFXPanel dummy = new JFXPanel(); // N�tig damit Test funktioniert
+        JFXPanel dummy = new JFXPanel(); // Noetig damit Test funktioniert
     }
 
     /**
@@ -44,7 +44,7 @@ public class GameTest {
     }
 
     /**
-     * Test ob die Höhe und die Weite des Spielbretts richtig sind
+     * Test ob die Hoehe und die Weite des Spielbretts richtig sind
      */
     @Test
     public void testBoardSize() {
@@ -134,7 +134,7 @@ public class GameTest {
 
 
     /**
-     * Setup der Spielsteine für die Tests
+     * Setup der Spielsteine fuer die Tests
      * <p>
      * [ ][ ][ ][b][ ][b][ ][b]
      * [b][ ][b][ ][ ][ ][b][ ]
@@ -252,7 +252,7 @@ public class GameTest {
     }
 
     /**
-     * Testet ob ein Stein trotz eines möglichen Kills normal bewegt werden kann
+     * Testet ob ein Stein trotz eines moeglichen Kills normal bewegt werden kann
      */
 
     @Test
@@ -271,7 +271,7 @@ public class GameTest {
 
 
     /**
-     * Testet ob ein Stein einen Kill ausführen kann und der gekillte Stein entfernt wird
+     * Testet ob ein Stein einen Kill ausfuehren kann und der gekillte Stein entfernt wird
      */
     @Test
     public void testPerformKillMove() {
@@ -290,7 +290,7 @@ public class GameTest {
     }
 
     /**
-     * Test ob mehrere Steine gekillt werden können
+     * Test ob mehrere Steine gekillt werden koennen
      */
     @Test
     public void testMultiKill() {
@@ -301,7 +301,7 @@ public class GameTest {
         /**
          *	Aktuelle Lage weiss ist am Zug
          *
-         *	    [ ][ ][ ][b][ ][b][ ][b]
+         *	  	[ ][ ][ ][b][ ][b][ ][b]
          * 		[b][ ][b][ ][ ][ ][b][ ]
          * 		[ ][b][ ][ ][ ][b][ ][b]
          * 		[b][ ][ ][ ][b][ ][ ][ ]
